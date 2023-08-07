@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 
-namespace Charge_Processing.Controllers
+namespace Clients_API.Controllers
 {
     [ApiController]
     [Route("[controller]")]

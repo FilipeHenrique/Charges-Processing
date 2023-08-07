@@ -1,4 +1,4 @@
-namespace Charge
+namespace Charges_API
 {
     public class WeatherForecast
     {
