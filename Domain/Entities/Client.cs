@@ -8,6 +8,7 @@
             State = state;
             CPF = cpf;
         }
+        public string? Id { get; set; }
         public string Name { get; private set; }
         public string State { get; private set; }
         public string CPF { get; private set; }

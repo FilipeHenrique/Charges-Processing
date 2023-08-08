@@ -1,5 +1,6 @@
 ﻿using Domain.Contracts.UseCases;
 using Domain.Entities;
+using Domain.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Clients_API.Controllers
@@ -10,17 +11,28 @@ namespace Clients_API.Controllers
     {
         private readonly ICreateClientUseCase _createClientUseCase;
 
-        public CreateClientController(ICreateClientUseCase createClientUseCase)
+        private readonly ICPFValidationService _cpfValidationService;
+
+        public CreateClientController(ICreateClientUseCase createClientUseCase, ICPFValidationService cPFValidationService)
         {
             _createClientUseCase = createClientUseCase;
+            _cpfValidationService = cPFValidationService;
         }
 
         [HttpPost]
         public IActionResult CreateClient(Client client)
         {
-            var newClient = new Client(client.Name, client.CPF, client.State);
-            _createClientUseCase.CreateClient(newClient);
-            return Created("", newClient);
+            if (!_cpfValidationService.IsCpf(client.CPF))
+            {
+                return BadRequest("Invalid CPF.");
+            }
+            else
+            {
+                var formattedCPF = _cpfValidationService.CPFToNumericString(client.CPF);
+                var newClient = new Client(client.Name, formattedCPF, client.State);
+                _createClientUseCase.CreateClient(newClient);
+                return Created("", newClient);
+            }
         }
     }
 }

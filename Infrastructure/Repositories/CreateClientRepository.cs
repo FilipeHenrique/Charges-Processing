@@ -1,9 +1,9 @@
-﻿using Domain.Contracts.Repositories.CreateClient;
+﻿using Domain.Contracts.Repositories;
 using Domain.Entities;
 using Infrastructure.DbContext;
 using MongoDB.Driver;
 
-namespace Infrastructure.Repositories.CreateClient
+namespace Infrastructure.Repositories
 {
     public class CreateClientRepository : ICreateClientRepository
     {
