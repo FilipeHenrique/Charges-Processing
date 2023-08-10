@@ -1,4 +1,7 @@
-﻿namespace Domain.Entities
+﻿using MongoDB.Bson.Serialization.Attributes;
+using MongoDB.Bson;
+
+namespace Domain.Entities
 {
     public class Client
     {   
@@ -8,10 +11,12 @@
             State = state;
             CPF = cpf;
         }
-        public string? Id { get; set; }
+
+        //[BsonId]
+        //[BsonRepresentation(BsonType.ObjectId)]
+        public ObjectId Id { get; set; }
         public string Name { get; private set; }
         public string State { get; private set; }
         public string CPF { get; private set; }
-
     }
 }

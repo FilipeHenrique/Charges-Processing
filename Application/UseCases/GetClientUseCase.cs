@@ -13,9 +13,9 @@ namespace Application.UseCases
             _getClientRepository = getClientRepository;
         }
 
-        public Task<Client> GetClient(string cpf)
+        public async Task<Client> GetClient(string cpf)
         {
-            return _getClientRepository.GetClient(cpf);
+            return await _getClientRepository.GetClient(cpf);
         }
     }
 }

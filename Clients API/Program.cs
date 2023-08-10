@@ -15,6 +15,9 @@ var connectionString = configuration.GetSection("ChargesDatabase:ConnectionStrin
 var databaseName = configuration.GetSection("ChargesDatabase:DatabaseName").Value;
 builder.Services.AddSingleton<IMongoDBContext>(new MongoDBContext(connectionString, databaseName));
 
+// Configure Mongo ClassMapping
+MongoDBConfig.Configure();
+
 /// Common Services
 builder.Services.AddScoped<ICPFValidationService, CPFValidationService>();
 

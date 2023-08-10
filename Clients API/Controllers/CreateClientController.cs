@@ -1,4 +1,7 @@
-﻿using Domain.Contracts.UseCases;
+﻿using Clients_API.DTO;
+using Clients_API.Mappers;
+using Domain.Contracts.Repositories;
+using Domain.Contracts.UseCases;
 using Domain.Entities;
 using Domain.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -11,28 +14,38 @@ namespace Clients_API.Controllers
     {
         private readonly ICreateClientUseCase _createClientUseCase;
 
+        private readonly IGetClientUseCase _getClientUseCase;
+
         private readonly ICPFValidationService _cpfValidationService;
 
-        public CreateClientController(ICreateClientUseCase createClientUseCase, ICPFValidationService cPFValidationService)
+        public CreateClientController(ICreateClientUseCase createClientUseCase, ICPFValidationService cPFValidationService, IGetClientUseCase getClientUseCase )
         {
             _createClientUseCase = createClientUseCase;
             _cpfValidationService = cPFValidationService;
+            _getClientUseCase = getClientUseCase;
         }
 
         [HttpPost]
-        public IActionResult CreateClient(Client client)
+        public async Task<IActionResult> CreateClient(CreateClientDTO createClientDTO)
         {
-            if (!_cpfValidationService.IsCpf(client.CPF))
+            if (!_cpfValidationService.IsCpf(createClientDTO.CPF))
             {
                 return BadRequest("Invalid CPF.");
             }
-            else
+
+            string formattedCPF = _cpfValidationService.CPFToNumericString(createClientDTO.CPF);
+            createClientDTO.CPF = formattedCPF;
+
+            Client client = await _getClientUseCase.GetClient(createClientDTO.CPF);
+
+            if (client != null)
             {
-                var formattedCPF = _cpfValidationService.CPFToNumericString(client.CPF);
-                var newClient = new Client(client.Name, formattedCPF, client.State);
-                _createClientUseCase.CreateClient(newClient);
-                return Created("", newClient);
+                return BadRequest("CPF already exists.");
             }
+
+            Client newClient = ClientMapper.ToClient(createClientDTO);
+            _createClientUseCase.CreateClient(newClient);
+            return Created("", newClient);
         }
     }
 }

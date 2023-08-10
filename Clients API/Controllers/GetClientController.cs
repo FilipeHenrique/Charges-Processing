@@ -20,18 +20,23 @@ namespace Clients_API.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<Client>> GetClient(string cpf)
+        public async Task<IActionResult> GetClient(string cpf)
         {
             if (!_cpfValidationService.IsCpf(cpf))
             {
                 return BadRequest("Invalid CPF.");
             }
-            else
+
+            string formattedCPF = _cpfValidationService.CPFToNumericString(cpf);
+            Client client = await _getClientUseCase.GetClient(formattedCPF);
+
+            if (client == null)
             {
-                var formattedCPF = _cpfValidationService.CPFToNumericString(cpf);
-                var client =  await _getClientUseCase.GetClient(formattedCPF);
-                return Ok(client);
+                return NotFound("Client not found.");
             }
+
+            return Ok(client);
+
         }
     }
 }
