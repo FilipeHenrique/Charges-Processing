@@ -1,4 +1,4 @@
-﻿using Domain.Contracts.UseCases;
+﻿using Domain.Contracts.UseCases.Clients;
 using Domain.Entities;
 using Domain.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -7,13 +7,13 @@ namespace Clients_API.Controllers
 {
     [Route("clients/{cpf}")]
     [ApiController]
-    public class GetClientController : Controller
+    public class GetClientsController : Controller
     {
-        private readonly IGetClientUseCase _getClientUseCase;
+        private readonly IGetClientsUseCase _getClientUseCase;
 
         private readonly ICPFValidationService _cpfValidationService;
 
-        public GetClientController(IGetClientUseCase getClientUseCase, ICPFValidationService cPFValidationService)
+        public GetClientsController(IGetClientsUseCase getClientUseCase, ICPFValidationService cPFValidationService)
         {
             _getClientUseCase = getClientUseCase;
             _cpfValidationService = cPFValidationService;

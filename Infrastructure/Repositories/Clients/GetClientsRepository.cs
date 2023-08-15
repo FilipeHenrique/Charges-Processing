@@ -1,15 +1,15 @@
-﻿using Domain.Contracts.Repositories;
+﻿using Domain.Contracts.Repositories.Clients;
 using Domain.Entities;
 using Infrastructure.DbContext;
 using MongoDB.Driver;
 
-namespace Infrastructure.Repositories
+namespace Infrastructure.Repositories.Clients
 {
-    public class GetClientRepository : IGetClientRepository
+    public class GetClientsRepository : IGetClientsRepository
     {
         private readonly IMongoCollection<Client> _collection;
 
-        public GetClientRepository(IMongoDBContext context)
+        public GetClientsRepository(IMongoDBContext context)
         {
             _collection = context.GetCollection<Client>("Clients");
         }

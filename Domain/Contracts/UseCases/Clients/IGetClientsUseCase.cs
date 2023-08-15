@@ -1,8 +1,8 @@
 ﻿using Domain.Entities;
 
-namespace Domain.Contracts.Repositories
+namespace Domain.Contracts.UseCases.Clients
 {
-    public interface IGetClientRepository
+    public interface IGetClientsUseCase
     {
         Task<Client> GetClient(string cpf);
     }

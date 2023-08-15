@@ -1,7 +1,6 @@
 ﻿using Clients_API.DTO;
 using Clients_API.Mappers;
-using Domain.Contracts.Repositories;
-using Domain.Contracts.UseCases;
+using Domain.Contracts.UseCases.Clients;
 using Domain.Entities;
 using Domain.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -14,11 +13,11 @@ namespace Clients_API.Controllers
     {
         private readonly ICreateClientUseCase _createClientUseCase;
 
-        private readonly IGetClientUseCase _getClientUseCase;
+        private readonly IGetClientsUseCase _getClientUseCase;
 
         private readonly ICPFValidationService _cpfValidationService;
 
-        public CreateClientController(ICreateClientUseCase createClientUseCase, ICPFValidationService cPFValidationService, IGetClientUseCase getClientUseCase )
+        public CreateClientController(ICreateClientUseCase createClientUseCase, ICPFValidationService cPFValidationService, IGetClientsUseCase getClientUseCase )
         {
             _createClientUseCase = createClientUseCase;
             _cpfValidationService = cPFValidationService;

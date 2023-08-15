@@ -1,8 +1,8 @@
-﻿using Domain.Contracts.Repositories;
-using Domain.Contracts.UseCases;
+﻿using Domain.Contracts.Repositories.Clients;
+using Domain.Contracts.UseCases.Clients;
 using Domain.Entities;
 
-namespace Application.UseCases
+namespace Application.UseCases.Clients
 {
     public class CreateClientUseCase : ICreateClientUseCase
     {
