@@ -4,10 +4,10 @@ using Domain.Entities;
 
 namespace Application.UseCases.Charges
 {
-    public class GetChargesUseCase : IGetChargesUseCase
+    public class ListChargesUseCase : IListChargesUseCase
     {
-        private readonly IGetChargesRepository _getChargesRepository;
-        public GetChargesUseCase(IGetChargesRepository getChargesRepository) {
+        private readonly IListChargesRepository _getChargesRepository;
+        public ListChargesUseCase(IListChargesRepository getChargesRepository) {
             _getChargesRepository = getChargesRepository;
         }
         public Task<List<Charge>> GetChargesByCPF(string cpf)

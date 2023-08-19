@@ -5,7 +5,7 @@ using MongoDB.Driver;
 
 namespace Infrastructure.Repositories.Charges
 {
-    public class GetChargesRepository : IGetChargesRepository
+    public class GetChargesRepository : IListChargesRepository
     {
         private readonly IMongoCollection<Charge> _collection;
 

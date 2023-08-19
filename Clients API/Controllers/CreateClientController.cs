@@ -13,11 +13,11 @@ namespace Clients_API.Controllers
     {
         private readonly ICreateClientUseCase _createClientUseCase;
 
-        private readonly IGetClientsUseCase _getClientUseCase;
+        private readonly IGetClientUseCase _getClientUseCase;
 
         private readonly ICPFValidationService _cpfValidationService;
 
-        public CreateClientController(ICreateClientUseCase createClientUseCase, ICPFValidationService cPFValidationService, IGetClientsUseCase getClientUseCase )
+        public CreateClientController(ICreateClientUseCase createClientUseCase, ICPFValidationService cPFValidationService, IGetClientUseCase getClientUseCase )
         {
             _createClientUseCase = createClientUseCase;
             _cpfValidationService = cPFValidationService;

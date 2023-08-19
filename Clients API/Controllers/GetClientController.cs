@@ -7,13 +7,13 @@ namespace Clients_API.Controllers
 {
     [Route("clients/{cpf}")]
     [ApiController]
-    public class GetClientsController : Controller
+    public class GetClientController : Controller
     {
-        private readonly IGetClientsUseCase _getClientUseCase;
+        private readonly IGetClientUseCase _getClientUseCase;
 
         private readonly ICPFValidationService _cpfValidationService;
 
-        public GetClientsController(IGetClientsUseCase getClientUseCase, ICPFValidationService cPFValidationService)
+        public GetClientController(IGetClientUseCase getClientUseCase, ICPFValidationService cPFValidationService)
         {
             _getClientUseCase = getClientUseCase;
             _cpfValidationService = cPFValidationService;

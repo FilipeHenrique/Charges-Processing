@@ -25,11 +25,11 @@ builder.Services.AddScoped<ICPFValidationService, CPFValidationService>();
 
 /// Repositories
 builder.Services.AddSingleton<ICreateChargeRepository, CreateChargeRepository>();
-builder.Services.AddSingleton<IGetChargesRepository, GetChargesRepository>();
+builder.Services.AddSingleton<IListChargesRepository, GetChargesRepository>();
 
 /// Use Cases
 builder.Services.AddScoped<ICreateChargeUseCase, CreateChargeUseCase>();
-builder.Services.AddScoped<IGetChargesUseCase, GetChargesUseCase>();
+builder.Services.AddScoped<IListChargesUseCase, ListChargesUseCase>();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

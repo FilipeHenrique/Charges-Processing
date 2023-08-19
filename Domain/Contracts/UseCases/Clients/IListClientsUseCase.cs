@@ -2,8 +2,8 @@
 
 namespace Domain.Contracts.UseCases.Clients
 {
-    public interface IGetClientsUseCase
+    public interface IListClientsUseCase
     {
-        Task<Client> GetClient(string cpf);
+        public Task<List<Client>> ListClients();
     }
 }

@@ -4,11 +4,11 @@ using Domain.Entities;
 
 namespace Application.UseCases.Clients
 {
-    public class GetClientsUseCase : IGetClientsUseCase
+    public class GetClientUseCase : IGetClientUseCase
     {
-        private readonly IGetClientsRepository _getClientRepository;
+        private readonly IGetClientRepository _getClientRepository;
 
-        public GetClientsUseCase(IGetClientsRepository getClientRepository)
+        public GetClientUseCase(IGetClientRepository getClientRepository)
         {
             _getClientRepository = getClientRepository;
         }

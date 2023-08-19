@@ -8,11 +8,11 @@ namespace Charges_API.Controllers
 {
     [ApiController]
     [Route("/charges")]
-    public class GetChargesController : Controller
+    public class ListChargesController : Controller
     {
-        private readonly IGetChargesUseCase _getChargesUseCase;
+        private readonly IListChargesUseCase _getChargesUseCase;
         private readonly ICPFValidationService _cpfValidationService;
-        public GetChargesController(IGetChargesUseCase getChargesUseCase, ICPFValidationService cpfValidationService) {
+        public ListChargesController(IListChargesUseCase getChargesUseCase, ICPFValidationService cpfValidationService) {
             _getChargesUseCase = getChargesUseCase;
             _cpfValidationService = cpfValidationService;
         }
