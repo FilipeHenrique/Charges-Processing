@@ -4,6 +4,7 @@ using Domain.Contracts.UseCases.Charges;
 using Domain.Services;
 using Infrastructure.DbContext;
 using Infrastructure.Repositories.Charges;
+using Infrastructure.Services.Charges_Processing_Job;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,6 +20,7 @@ builder.Services.AddSingleton<IMongoDBContext>(new MongoDBContext(connectionStri
 MongoDBConfig.Configure();
 
 /// Common Services
+builder.Services.AddInfrastructure();
 builder.Services.AddScoped<ICPFValidationService, CPFValidationService>();
 
 /// Repositories
