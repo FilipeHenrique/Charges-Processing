@@ -1,5 +1,6 @@
 ﻿using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Bson;
+using System.Text.Json.Serialization;
 
 namespace Domain.Entities
 {
@@ -15,8 +16,11 @@ namespace Domain.Entities
         //[BsonId]
         //[BsonRepresentation(BsonType.ObjectId)]
         public ObjectId Id { get; set; }
+        [JsonPropertyName("name")]
         public string Name { get; private set; }
+        [JsonPropertyName("state")]
         public string State { get; private set; }
+        [JsonPropertyName("cpf")]
         public string CPF { get; private set; }
     }
 }
