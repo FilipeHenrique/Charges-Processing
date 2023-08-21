@@ -1,8 +1,5 @@
-﻿using Amazon.Runtime.Internal;
-using Domain.Entities;
+﻿using Domain.Entities;
 using Microsoft.Extensions.Logging;
-using MongoDB.Bson;
-using MongoDB.Bson.IO;
 using Quartz;
 using System.Text.Json;
 
@@ -24,11 +21,12 @@ namespace Charges_Processing_Job
             {
                 HttpResponseMessage clientsResponse = await httpClient.GetAsync("http://localhost:7085/clients");
 
+                List<(string state, float value)> chargesByState = new List<(string, float)>();
 
                 if (clientsResponse.IsSuccessStatusCode)
                 {
                     string responseBody = await clientsResponse.Content.ReadAsStringAsync();
-                    IAsyncEnumerable<Client>? clients = JsonSerializer.Deserialize<IAsyncEnumerable<Client>>(responseBody);
+                    IAsyncEnumerable<Client> clients = JsonSerializer.Deserialize<IAsyncEnumerable<Client>>(responseBody);
 
                     await foreach (Client client in clients)
                     {
@@ -43,12 +41,24 @@ namespace Charges_Processing_Job
                         var content = new StringContent(JsonSerializer.Serialize(charge), System.Text.Encoding.UTF8, "application/json");
 
                         HttpResponseMessage chargeResponse = await httpClient.PostAsync("http://localhost:7289/charges", content);
-
-                        _logger.LogInformation($"{chargeResponse}");
+                       
+                        chargesByState.Add((client.State, chargeValue));
                     }
 
-                }
+                    // MapReduce
+                    var totalChargesByState = chargesByState
+                        .GroupBy(charge => charge.state)
+                        .Select(group => new
+                        {
+                            State = group.Key,
+                            Total = group.Sum(charge => charge.value)
+                        })
+                        .OrderBy(charge => charge.State);
 
+                    foreach (var charge in totalChargesByState) { 
+                        _logger.LogInformation($"{charge.State}: {charge.Total}"); 
+                    }
+                }
             }
             catch (Exception ex)
             {
