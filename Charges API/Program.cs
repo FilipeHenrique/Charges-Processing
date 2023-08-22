@@ -1,9 +1,9 @@
 using Application.UseCases.Charges;
-using Domain.Contracts.Repositories.Charges;
+using Domain.Contracts.Repositories;
 using Domain.Contracts.UseCases.Charges;
 using Domain.Services;
 using Infrastructure.DbContext;
-using Infrastructure.Repositories.Charges;
+using Infrastructure.Repositories;
 using Infrastructure.Services.Charges_Processing_Job;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -24,8 +24,7 @@ builder.Services.AddInfrastructure();
 builder.Services.AddScoped<ICPFValidationService, CPFValidationService>();
 
 /// Repositories
-builder.Services.AddSingleton<ICreateChargeRepository, CreateChargeRepository>();
-builder.Services.AddSingleton<IListChargesRepository, GetChargesRepository>();
+builder.Services.AddSingleton<IChargesRepository, ChargesRepository>();
 
 /// Use Cases
 builder.Services.AddScoped<ICreateChargeUseCase, CreateChargeUseCase>();

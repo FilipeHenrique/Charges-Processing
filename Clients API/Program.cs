@@ -1,9 +1,9 @@
 using Application.UseCases.Clients;
-using Domain.Contracts.Repositories.Clients;
+using Domain.Contracts.Repositories;
 using Domain.Contracts.UseCases.Clients;
 using Domain.Services;
 using Infrastructure.DbContext;
-using Infrastructure.Repositories.Clients;
+using Infrastructure.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -22,9 +22,7 @@ MongoDBConfig.Configure();
 builder.Services.AddScoped<ICPFValidationService, CPFValidationService>();
 
 /// Repositories
-builder.Services.AddSingleton<ICreateClientRepository, CreateClientRepository>();
-builder.Services.AddSingleton<IGetClientRepository, GetClientRepository>();
-builder.Services.AddSingleton<IListClientsRpository, ListClientsRepository>();
+builder.Services.AddSingleton<IClientsRepository, ClientsRepository>();
 
 /// Use Cases
 builder.Services.AddScoped<ICreateClientUseCase, CreateClientUseCase>();

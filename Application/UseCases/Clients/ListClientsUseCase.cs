@@ -1,4 +1,4 @@
-﻿using Domain.Contracts.Repositories.Clients;
+﻿using Domain.Contracts.Repositories;
 using Domain.Contracts.UseCases.Clients;
 using Domain.Entities;
 
@@ -6,16 +6,16 @@ namespace Application.UseCases.Clients
 {
     public class ListClientsUseCase : IListClientsUseCase
     {
-        private readonly IListClientsRpository _listClientsRepository;
+        private readonly IClientsRepository clientsRepository;
 
-        public ListClientsUseCase(IListClientsRpository listClientsRepository)
+        public ListClientsUseCase(IClientsRepository clientsRepository)
         {
-            _listClientsRepository = listClientsRepository;
+            this.clientsRepository = clientsRepository;
         }
 
         public async Task<List<Client>> ListClients()
         {
-            return await _listClientsRepository.ListClients();
+            return await clientsRepository.FindAll();
         }
     }
 }

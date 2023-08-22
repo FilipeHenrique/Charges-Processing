@@ -1,4 +1,4 @@
-﻿using Domain.Contracts.Repositories.Clients;
+﻿using Domain.Contracts.Repositories;
 using Domain.Contracts.UseCases.Clients;
 using Domain.Entities;
 
@@ -6,15 +6,15 @@ namespace Application.UseCases.Clients
 {
     public class CreateClientUseCase : ICreateClientUseCase
     {
-        private readonly ICreateClientRepository _createClientRepository;
+        private readonly IClientsRepository clientsRepository;
 
-        public CreateClientUseCase(ICreateClientRepository createClientRepository)
+        public CreateClientUseCase(IClientsRepository clientsRepository)
         {
-            _createClientRepository = createClientRepository;
+            this.clientsRepository = clientsRepository;
         }
         public void CreateClient(Client client)
         {
-            _createClientRepository.CreateClient(client);
+            clientsRepository.Create(client);
         }
     }
 }
