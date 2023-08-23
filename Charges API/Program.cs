@@ -16,19 +16,16 @@ var connectionString = configuration.GetSection("ChargesDatabase:ConnectionStrin
 var databaseName = configuration.GetSection("ChargesDatabase:DatabaseName").Value;
 builder.Services.AddSingleton<IMongoDBContext>(new MongoDBContext(connectionString, databaseName));
 
-// Configure Mongo ClassMapping
-MongoDBConfig.Configure();
-
 /// Common Services
 builder.Services.AddInfrastructure();
-builder.Services.AddScoped<ICPFValidationService, CPFValidationService>();
+builder.Services.AddTransient<ICPFValidationService, CPFValidationService>();
 
 /// Repositories
-builder.Services.AddSingleton<IChargesRepository, ChargesRepository>();
+builder.Services.AddTransient<IChargesRepository, ChargesRepository>();
 
 /// Use Cases
-builder.Services.AddScoped<ICreateChargeUseCase, CreateChargeUseCase>();
-builder.Services.AddScoped<IListChargesUseCase, ListChargesUseCase>();
+builder.Services.AddTransient<ICreateChargeUseCase, CreateChargeUseCase>();
+builder.Services.AddTransient<IListChargesUseCase, ListChargesUseCase>();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
