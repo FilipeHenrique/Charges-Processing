@@ -35,17 +35,17 @@ namespace Clients_API.Controllers
                 return BadRequest("Invalid CPF.");
             }
 
-            string formattedCPF = cpfValidationService.CPFToNumericString(createClientDTO.CPF);
+            var formattedCPF = cpfValidationService.CPFToNumericString(createClientDTO.CPF);
             createClientDTO.CPF = formattedCPF;
 
-            Client client = await getClientUseCase.GetClient(createClientDTO.CPF);
+            var client = await getClientUseCase.GetClient(createClientDTO.CPF);
 
             if (client != null)
             {
                 return BadRequest("CPF already exists.");
             }
 
-            Client newClient = ClientMapper.ToClient(createClientDTO);
+            var newClient = ClientMapper.ToClient(createClientDTO);
             createClientUseCase.CreateClient(newClient);
             return Created("", newClient);
         }
@@ -58,8 +58,8 @@ namespace Clients_API.Controllers
                 return BadRequest("Invalid CPF.");
             }
 
-            string formattedCPF = cpfValidationService.CPFToNumericString(cpf);
-            Client client = await getClientUseCase.GetClient(formattedCPF);
+            var formattedCPF = cpfValidationService.CPFToNumericString(cpf);
+            var client = await getClientUseCase.GetClient(formattedCPF);
 
             if (client == null)
             {

@@ -28,7 +28,7 @@ namespace Infrastructure.Repositories
 
         public async Task<List<Charge>> ListByMonth(int month)
         {
-            int currentYear = DateTime.UtcNow.Year;
+            var currentYear = DateTime.UtcNow.Year;
 
             var startDate = new DateTime(currentYear, month, 1);
             var endDate = startDate.AddMonths(1);

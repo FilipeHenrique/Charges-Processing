@@ -27,8 +27,8 @@ namespace Charges_API.Controllers
             {
                 return BadRequest("Invalid CPF.");
             }
-            string formattedCPF = cpfValidationService.CPFToNumericString(createChargeDTO.ClientCPF);
-            Charge newCharge = new Charge(createChargeDTO.Value, createChargeDTO.DueDate, formattedCPF);
+            var formattedCPF = cpfValidationService.CPFToNumericString(createChargeDTO.ClientCPF);
+            var newCharge = new Charge(createChargeDTO.Value, createChargeDTO.DueDate, formattedCPF);
             createChargeUseCase.CreateCharge(newCharge);
             return Created("", newCharge);
         }
