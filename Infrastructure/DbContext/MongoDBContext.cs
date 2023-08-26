@@ -4,19 +4,19 @@ namespace Infrastructure.DbContext
 {
     public class MongoDBContext : IMongoDBContext
     {
-        private readonly IMongoDatabase _database;
+        private readonly IMongoDatabase database;
 
         public MongoDBContext(string connectionString, string databaseName)
         {
             var client = new MongoClient(connectionString);
-            _database = client.GetDatabase(databaseName);
+            database = client.GetDatabase(databaseName);
         }
 
-        public IMongoDatabase Database => _database;
+        public IMongoDatabase Database => database;
 
         public IMongoCollection<T> GetCollection<T>(string collectionName)
         {
-            return _database.GetCollection<T>(collectionName);
+            return database.GetCollection<T>(collectionName);
         }
     }
 }

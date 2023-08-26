@@ -1,5 +1,5 @@
-﻿using Domain.Contracts.Repositories;
-using Domain.Entities;
+﻿using Domain.Charges.Entities;
+using Domain.Charges.Interfaces.Repositories;
 using Infrastructure.DbContext;
 using MongoDB.Driver;
 

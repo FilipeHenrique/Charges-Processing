@@ -1,4 +1,5 @@
-﻿using Domain.Entities;
+﻿using Domain.Charges.Entities;
+using Domain.Clients.Entities;
 using Microsoft.Extensions.Logging;
 using Quartz;
 using System.Text.Json;

@@ -1,5 +1,5 @@
 ﻿using Clients_API.DTO;
-using Domain.Entities;
+using Domain.Clients.Entities;
 
 namespace Clients_API.Mappers
 {

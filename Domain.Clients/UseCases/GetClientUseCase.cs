@@ -1,0 +1,21 @@
+﻿using Domain.Clients.Entities;
+using Domain.Clients.Interfaces.Repositories;
+using Domain.Clients.Interfaces.UseCases;
+
+namespace Domain.Clients.UseCases
+{
+    public class GetClientUseCase : IGetClientUseCase
+    {
+        private readonly IClientsRepository clientsRepository;
+
+        public GetClientUseCase(IClientsRepository clientsRepository)
+        {
+            this.clientsRepository = clientsRepository;
+        }
+
+        public async Task<Client> GetClient(string cpf)
+        {
+            return await clientsRepository.GetByCPF(cpf);
+        }
+    }
+}

@@ -1,9 +1,8 @@
-using Application.UseCases.Clients;
-using Domain.Contracts.Repositories;
-using Domain.Contracts.UseCases.Clients;
-using Domain.Services;
+using Domain.Clients.Interfaces.Repositories;
+using Domain.Clients.UseCases;
 using Infrastructure.DbContext;
 using Infrastructure.Repositories;
+using Infrastructure.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -22,9 +21,7 @@ builder.Services.AddTransient<ICPFValidationService, CPFValidationService>();
 builder.Services.AddTransient<IClientsRepository, ClientsRepository>();
 
 /// Use Cases
-builder.Services.AddTransient<ICreateClientUseCase, CreateClientUseCase>();
-builder.Services.AddTransient<IGetClientUseCase, GetClientUseCase>();
-builder.Services.AddTransient<IListClientsUseCase, ListClientsUseCase>();
+builder.Services.AddUseCases();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

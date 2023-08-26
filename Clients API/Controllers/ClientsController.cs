@@ -1,8 +1,8 @@
 ﻿using Clients_API.DTO;
 using Clients_API.Mappers;
-using Domain.Contracts.UseCases.Clients;
-using Domain.Entities;
-using Domain.Services;
+using Domain.Clients.Entities;
+using Domain.Clients.Interfaces.UseCases;
+using Infrastructure.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Clients_API.Controllers

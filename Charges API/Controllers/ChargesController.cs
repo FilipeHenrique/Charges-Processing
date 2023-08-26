@@ -1,7 +1,7 @@
 ﻿using Charges_API.DTO;
-using Domain.Contracts.UseCases.Charges;
-using Domain.Entities;
-using Domain.Services;
+using Domain.Charges.Entities;
+using Domain.Charges.Interfaces.UseCases;
+using Infrastructure.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Charges_API.Controllers

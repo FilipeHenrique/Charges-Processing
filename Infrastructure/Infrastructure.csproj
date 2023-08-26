@@ -7,12 +7,13 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="MongoDB.Driver" Version="2.20.0" />
+    <PackageReference Include="MongoDB.Driver" Version="2.21.0" />
     <PackageReference Include="Quartz.Extensions.Hosting" Version="3.7.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Domain\Domain.csproj" />
+    <ProjectReference Include="..\Domain.Charges\Domain.Charges.csproj" />
+    <ProjectReference Include="..\Domain.Clients\Domain.Clients.csproj" />
   </ItemGroup>
 
 </Project>
