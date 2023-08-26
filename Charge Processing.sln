@@ -9,9 +9,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Charges API", "Charges API\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Infrastructure", "Infrastructure\Infrastructure.csproj", "{77E334F3-AFEF-4868-96DA-437A3D8BC2A8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domain.Clients", "Domain.Clients\Domain.Clients.csproj", "{27544761-FBB1-4E0B-9E5D-9A73A03E7BE9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Domain.Clients", "Domain.Clients\Domain.Clients.csproj", "{27544761-FBB1-4E0B-9E5D-9A73A03E7BE9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domain.Charges", "Domain.Charges\Domain.Charges.csproj", "{562CDB53-2B5B-4386-9B3C-89AA9D80E74F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Domain.Charges", "Domain.Charges\Domain.Charges.csproj", "{562CDB53-2B5B-4386-9B3C-89AA9D80E74F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Charges Processing Job", "Charges Processing Job\Charges Processing Job.csproj", "{F1012995-F589-4DD7-8C86-53F0137E69DA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,6 +41,10 @@ Global
 		{562CDB53-2B5B-4386-9B3C-89AA9D80E74F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{562CDB53-2B5B-4386-9B3C-89AA9D80E74F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{562CDB53-2B5B-4386-9B3C-89AA9D80E74F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F1012995-F589-4DD7-8C86-53F0137E69DA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F1012995-F589-4DD7-8C86-53F0137E69DA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F1012995-F589-4DD7-8C86-53F0137E69DA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F1012995-F589-4DD7-8C86-53F0137E69DA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

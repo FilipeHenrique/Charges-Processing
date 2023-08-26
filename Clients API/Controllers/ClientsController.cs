@@ -12,11 +12,8 @@ namespace Clients_API.Controllers
     public class ClientsController : Controller
     {
         private readonly ICreateClientUseCase createClientUseCase;
-
         private readonly IGetClientUseCase getClientUseCase;
-
         private readonly IListClientsUseCase listClientsUseCase;
-
         private readonly ICPFValidationService cpfValidationService;
 
         public ClientsController(ICreateClientUseCase createClientUseCase, ICPFValidationService cPFValidationService, IGetClientUseCase getClientUseCase, IListClientsUseCase listClientsUseCase)

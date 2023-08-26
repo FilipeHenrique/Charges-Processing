@@ -16,6 +16,7 @@ namespace Charges_Processing_Job
         {
             _logger = logger;
         }
+
         public async Task Execute(IJobExecutionContext context)
         {
             try
@@ -23,7 +24,7 @@ namespace Charges_Processing_Job
                 var response = await GetClients();
                 var clients = JsonSerializer.Deserialize<IAsyncEnumerable<Client>>(response);
                 var chargesByState = await ProcessCharges(clients);
-                MapReduce(chargesByState);            
+                MapReduce(chargesByState);
             }
             catch (Exception ex)
             {

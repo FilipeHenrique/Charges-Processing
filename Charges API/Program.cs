@@ -3,7 +3,6 @@ using Domain.Charges.UseCases;
 using Infrastructure.DbContext;
 using Infrastructure.Repositories;
 using Infrastructure.Services;
-using Infrastructure.Services.Charges_Processing_Job;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,7 +15,6 @@ var databaseName = configuration.GetSection("ChargesDatabase:DatabaseName").Valu
 builder.Services.AddSingleton<IMongoDBContext>(new MongoDBContext(connectionString, databaseName));
 
 /// Common Services
-builder.Services.AddInfrastructure();
 builder.Services.AddTransient<ICPFValidationService, CPFValidationService>();
 
 /// Repositories

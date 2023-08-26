@@ -46,7 +46,7 @@ namespace Charges_API.Controllers
                 return BadRequest("Only one filter is permitted, choose between cpf or dueDate");
             }
 
-            List<Charge>? charges = null;
+            IEnumerable<Charge>? charges = null;
 
             if (!string.IsNullOrWhiteSpace(cpf))
             {
