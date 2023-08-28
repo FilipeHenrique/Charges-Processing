@@ -19,14 +19,21 @@ namespace Infrastructure.Repositories
             await collection.InsertOneAsync(charge);
         }
 
-        public async Task<List<Charge>> ListByCPF(string cpf)
+        public async IAsyncEnumerable<Charge> ListByCPF(string cpf)
         {
             var filter = Builders<Charge>.Filter.Eq("ClientCPF", cpf);
-            var charges = await collection.Find(filter).ToListAsync();
-            return charges;
+            var charges = await collection.FindAsync(filter);
+
+            while (await charges.MoveNextAsync())
+            {
+                foreach (var charge in charges.Current)
+                {
+                    yield return charge;
+                }
+            }
         }
 
-        public async Task<List<Charge>> ListByMonth(int month)
+        public async IAsyncEnumerable<Charge> ListByMonth(int month)
         {
             var currentYear = DateTime.UtcNow.Year;
 
@@ -38,7 +45,15 @@ namespace Infrastructure.Repositories
                 Builders<Charge>.Filter.Lt("DueDate", endDate)
             );
 
-            return await collection.Find(filter).ToListAsync();
+            var charges = await collection.FindAsync(filter);
+
+            while (await charges.MoveNextAsync())
+            {
+                foreach (var charge in charges.Current)
+                {
+                    yield return charge;
+                }
+            }
         }
     }
 }

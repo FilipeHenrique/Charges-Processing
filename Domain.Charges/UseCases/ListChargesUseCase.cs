@@ -1,6 +1,7 @@
 ﻿using Domain.Charges.Entities;
 using Domain.Charges.Interfaces.Repositories;
 using Domain.Charges.Interfaces.UseCases;
+using System.Runtime.InteropServices;
 
 namespace Domain.Charges.UseCases
 {
@@ -11,13 +12,23 @@ namespace Domain.Charges.UseCases
         {
             this.chargesRepository = chargesRepository;
         }
-        public Task<List<Charge>> GetChargesByCPF(string cpf)
+        public async IAsyncEnumerable<Charge> GetChargesByCPF(string cpf)
         {
-            return chargesRepository.ListByCPF(cpf);
+            var charges = chargesRepository.ListByCPF(cpf);
+
+            await foreach (var charge in charges)
+            {
+                yield return charge;
+            }            
         }
-        public Task<List<Charge>> GetChargesByMonth(int month)
+        public async IAsyncEnumerable<Charge> GetChargesByMonth(int month)
         {
-            return chargesRepository.ListByMonth(month);
+            var charges = chargesRepository.ListByMonth(month);
+
+            await foreach (var charge in charges)
+            {
+                yield return charge;
+            }
         }
     }
 }

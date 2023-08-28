@@ -13,9 +13,14 @@ namespace Domain.Clients.UseCases
             this.clientsRepository = clientsRepository;
         }
 
-        public async Task<List<Client>> ListClients()
+        public async IAsyncEnumerable<Client> ListClients()
         {
-            return await clientsRepository.FindAll();
+            var clients =  clientsRepository.FindAll();
+
+            await foreach (var client in clients)
+            {
+                yield return client;
+            }
         }
     }
 }

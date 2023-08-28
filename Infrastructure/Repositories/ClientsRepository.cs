@@ -26,9 +26,17 @@ namespace Infrastructure.Repositories
             return await collection.Find(filter).FirstOrDefaultAsync();
         }
 
-        public async Task<List<Client>> FindAll()
+        public async IAsyncEnumerable<Client> FindAll()
         {
-            return await collection.Find(new BsonDocument()).ToListAsync();
+            var clients = await collection.FindAsync(new BsonDocument());
+
+            while (await clients.MoveNextAsync())
+            {
+                foreach (var client in clients.Current)
+                {
+                    yield return client;
+                }
+            }
         }
 
     }

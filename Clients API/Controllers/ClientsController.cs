@@ -63,14 +63,23 @@ namespace Clients_API.Controllers
                 return NotFound("Client not found.");
             }
 
-            return Ok(client);
+            var newClient = ClientMapper.ToCreateClientDTO(client);
+            return Ok(newClient);
 
         }
         [HttpGet]
         public async Task<IActionResult> ListClients()
         {
-            List<Client> clients = await listClientsUseCase.ListClients();
-            return Ok(clients);
+            var clientsAsyncEnumerable = listClientsUseCase.ListClients();
+
+            var clientList = new List<Client>();
+
+            await foreach (var client in clientsAsyncEnumerable)
+            {
+                clientList.Add(client);
+            }
+
+            return(Ok(ClientMapper.ListToDTO(clientList)));
         }
     }
 }

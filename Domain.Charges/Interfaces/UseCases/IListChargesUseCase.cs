@@ -4,7 +4,7 @@ namespace Domain.Charges.Interfaces.UseCases
 {
     public interface IListChargesUseCase
     {
-        public Task<List<Charge>> GetChargesByCPF(string cpf);
-        public Task<List<Charge>> GetChargesByMonth(int month);
+        public IAsyncEnumerable<Charge> GetChargesByCPF(string cpf);
+        public IAsyncEnumerable<Charge> GetChargesByMonth(int month);
     }
 }

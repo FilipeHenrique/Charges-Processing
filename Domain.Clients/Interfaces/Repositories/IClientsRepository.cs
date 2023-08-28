@@ -5,7 +5,7 @@ namespace Domain.Clients.Interfaces.Repositories
     {
         Task Create(Client client);
         Task<Client> GetByCPF(string cpf);
-        public Task<List<Client>> FindAll();
+        public IAsyncEnumerable<Client> FindAll();
 
     }
 }

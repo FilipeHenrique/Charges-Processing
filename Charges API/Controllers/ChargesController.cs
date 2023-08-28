@@ -1,8 +1,10 @@
 ﻿using Charges_API.DTO;
+using Charges_API.Mappers;
 using Domain.Charges.Entities;
 using Domain.Charges.Interfaces.UseCases;
 using Infrastructure.Services;
 using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
 
 namespace Charges_API.Controllers
 {
@@ -46,7 +48,7 @@ namespace Charges_API.Controllers
                 return BadRequest("Only one filter is permitted, choose between cpf or dueDate");
             }
 
-            IEnumerable<Charge>? charges = null;
+            IAsyncEnumerable<Charge>? chargesAsyncEnumerable = null;
 
             if (!string.IsNullOrWhiteSpace(cpf))
             {
@@ -55,15 +57,22 @@ namespace Charges_API.Controllers
                     return BadRequest("Invalid CPF.");
                 }
                 string formattedCPF = cpfValidationService.CPFToNumericString(cpf);
-                charges = await getChargesUseCase.GetChargesByCPF(formattedCPF);
+                chargesAsyncEnumerable = getChargesUseCase.GetChargesByCPF(formattedCPF);
             }
 
             if (month != null)
             {
-                charges = await getChargesUseCase.GetChargesByMonth((int)month);
+                chargesAsyncEnumerable = getChargesUseCase.GetChargesByMonth((int)month);
             }
 
-            return Ok(charges);
+            List<Charge> chargesList = new List<Charge>();
+
+            await foreach(Charge charge in chargesAsyncEnumerable)
+            {
+                chargesList.Add(charge);
+            }
+
+            return Ok(ChargeMapper.ListToDTO(chargesList));
         }
     }
 }

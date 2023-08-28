@@ -14,5 +14,10 @@ namespace Clients_API.Mappers
         {
             return new Client(createClientDTO.Name, createClientDTO.State, createClientDTO.CPF);
         }
+
+        public static IEnumerable<CreateClientDTO> ListToDTO(IEnumerable<Client> clients)
+        {
+            return clients.Select(client => new CreateClientDTO(client.Name, client.State, client.CPF));
+        }
     }
 }
