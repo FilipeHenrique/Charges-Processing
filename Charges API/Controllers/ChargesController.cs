@@ -65,7 +65,7 @@ namespace Charges_API.Controllers
                 chargesAsyncEnumerable = getChargesUseCase.GetChargesByMonth((int)month);
             }
 
-            List<Charge> chargesList = new List<Charge>();
+            var chargesList = new List<Charge>();
 
             await foreach(Charge charge in chargesAsyncEnumerable)
             {
