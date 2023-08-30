@@ -10,7 +10,7 @@ namespace Domain.Clients.UseCases
         {
             services.AddTransient<ICreateClientUseCase, CreateClientUseCase>();
             services.AddTransient<IGetClientUseCase, GetClientUseCase>();
-            services.AddTransient<IListClientsUseCase, ListClientsUseCase>();
+            services.AddTransient<IGetAllClientsUseCase, GetAllClientsUseCase>();
         }
     }
 }

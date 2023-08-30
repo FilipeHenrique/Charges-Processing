@@ -4,7 +4,6 @@ using Domain.Charges.Entities;
 using Domain.Charges.Interfaces.UseCases;
 using Infrastructure.Services;
 using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
 
 namespace Charges_API.Controllers
 {
@@ -12,10 +11,11 @@ namespace Charges_API.Controllers
     [Route("[controller]")]
     public class ChargesController : Controller
     {
-        private readonly IListChargesUseCase getChargesUseCase;
+        private readonly IGetChargesUseCase getChargesUseCase;
         private readonly ICPFValidationService cpfValidationService;
         private readonly ICreateChargeUseCase createChargeUseCase;
-        public ChargesController(IListChargesUseCase getChargesUseCase, ICPFValidationService cpfValidationService, ICreateChargeUseCase createChargeUseCase)
+
+        public ChargesController(IGetChargesUseCase getChargesUseCase, ICPFValidationService cpfValidationService, ICreateChargeUseCase createChargeUseCase)
         {
             this.getChargesUseCase = getChargesUseCase;
             this.cpfValidationService = cpfValidationService;
@@ -23,7 +23,7 @@ namespace Charges_API.Controllers
         }
 
         [HttpPost]
-        public IActionResult CreateCharge(CreateChargeDTO createChargeDTO)
+        public IActionResult Create(CreateChargeDTO createChargeDTO)
         {
             if (!cpfValidationService.IsCpf(createChargeDTO.ClientCPF))
             {
@@ -31,12 +31,12 @@ namespace Charges_API.Controllers
             }
             var formattedCPF = cpfValidationService.CPFToNumericString(createChargeDTO.ClientCPF);
             var newCharge = new Charge(createChargeDTO.Value, createChargeDTO.DueDate, formattedCPF);
-            createChargeUseCase.CreateCharge(newCharge);
+            createChargeUseCase.Create(newCharge);
             return Created("", newCharge);
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetCharges(string? cpf = null, int? month = null)
+        public async Task<IActionResult> GetAll(string? cpf = null, int? month = null)
         {
             if (string.IsNullOrWhiteSpace(cpf) && month == null)
             {
@@ -57,16 +57,15 @@ namespace Charges_API.Controllers
                     return BadRequest("Invalid CPF.");
                 }
                 string formattedCPF = cpfValidationService.CPFToNumericString(cpf);
-                chargesAsyncEnumerable = getChargesUseCase.GetChargesByCPF(formattedCPF);
+                chargesAsyncEnumerable = getChargesUseCase.GetByCPF(formattedCPF);
             }
 
             if (month != null)
             {
-                chargesAsyncEnumerable = getChargesUseCase.GetChargesByMonth((int)month);
+                chargesAsyncEnumerable = getChargesUseCase.GetByMonth((int)month);
             }
 
             var chargesList = new List<Charge>();
-
             await foreach(Charge charge in chargesAsyncEnumerable)
             {
                 chargesList.Add(charge);

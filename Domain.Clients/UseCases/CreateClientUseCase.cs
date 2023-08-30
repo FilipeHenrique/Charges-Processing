@@ -12,7 +12,8 @@ namespace Domain.Clients.UseCases
         {
             this.clientsRepository = clientsRepository;
         }
-        public void CreateClient(Client client)
+
+        public void Create(Client client)
         {
             clientsRepository.Create(client);
         }

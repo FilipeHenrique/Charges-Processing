@@ -5,7 +5,7 @@ namespace Domain.Charges.Interfaces.Repositories
     public interface IChargesRepository
     {
         Task Create(Charge charge);
-        IAsyncEnumerable<Charge> ListByCPF(string cpf);
-        IAsyncEnumerable<Charge> ListByMonth(int month);
+        IAsyncEnumerable<Charge> GetByCPF(string cpf);
+        IAsyncEnumerable<Charge> GetByMonth(int month);
     }
 }

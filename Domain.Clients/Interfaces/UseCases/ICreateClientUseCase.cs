@@ -4,6 +4,6 @@ namespace Domain.Clients.Interfaces.UseCases
 {
     public interface ICreateClientUseCase
     {
-        void CreateClient(Client client);
+        void Create(Client client);
     }
 }

@@ -7,12 +7,13 @@ namespace Domain.Charges.UseCases
     public class CreateChargeUseCase : ICreateChargeUseCase
     {
         private readonly IChargesRepository chargesRepository;
+
         public CreateChargeUseCase(IChargesRepository chargesRepository)
         {
             this.chargesRepository = chargesRepository;
         }
 
-        public void CreateCharge(Charge charge)
+        public void Create(Charge charge)
         {
             chargesRepository.Create(charge);
         }

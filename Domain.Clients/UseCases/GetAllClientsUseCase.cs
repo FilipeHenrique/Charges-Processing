@@ -4,16 +4,16 @@ using Domain.Clients.Interfaces.UseCases;
 
 namespace Domain.Clients.UseCases
 {
-    public class ListClientsUseCase : IListClientsUseCase
+    public class GetAllClientsUseCase : IGetAllClientsUseCase
     {
         private readonly IClientsRepository clientsRepository;
 
-        public ListClientsUseCase(IClientsRepository clientsRepository)
+        public GetAllClientsUseCase(IClientsRepository clientsRepository)
         {
             this.clientsRepository = clientsRepository;
         }
 
-        public async IAsyncEnumerable<Client> ListClients()
+        public async IAsyncEnumerable<Client> GetAll()
         {
             var clients =  clientsRepository.FindAll();
 

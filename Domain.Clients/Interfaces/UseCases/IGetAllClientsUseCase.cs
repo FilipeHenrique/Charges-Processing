@@ -3,8 +3,8 @@ using System.Collections.Generic;
 
 namespace Domain.Clients.Interfaces.UseCases
 {
-    public interface IListClientsUseCase
+    public interface IGetAllClientsUseCase
     {
-        public IAsyncEnumerable<Client> ListClients();
+        public IAsyncEnumerable<Client> GetAll();
     }
 }

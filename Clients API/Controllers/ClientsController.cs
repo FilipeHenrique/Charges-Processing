@@ -13,14 +13,14 @@ namespace Clients_API.Controllers
     {
         private readonly ICreateClientUseCase createClientUseCase;
         private readonly IGetClientUseCase getClientUseCase;
-        private readonly IListClientsUseCase listClientsUseCase;
+        private readonly IGetAllClientsUseCase getClientsUseCase;
         private readonly ICPFValidationService cpfValidationService;
 
-        public ClientsController(ICreateClientUseCase createClientUseCase, ICPFValidationService cPFValidationService, IGetClientUseCase getClientUseCase, IListClientsUseCase listClientsUseCase)
+        public ClientsController(ICreateClientUseCase createClientUseCase, ICPFValidationService cPFValidationService, IGetClientUseCase getClientUseCase, IGetAllClientsUseCase listClientsUseCase)
         {
             this.createClientUseCase = createClientUseCase;
             this.getClientUseCase = getClientUseCase;
-            this.listClientsUseCase = listClientsUseCase;
+            this.getClientsUseCase = listClientsUseCase;
             this.cpfValidationService = cPFValidationService;
         }
 
@@ -35,7 +35,7 @@ namespace Clients_API.Controllers
             var formattedCPF = cpfValidationService.CPFToNumericString(createClientDTO.CPF);
             createClientDTO.CPF = formattedCPF;
 
-            var client = await getClientUseCase.GetClient(createClientDTO.CPF);
+            var client = await getClientUseCase.GetByCPF(createClientDTO.CPF);
 
             if (client != null)
             {
@@ -43,7 +43,7 @@ namespace Clients_API.Controllers
             }
 
             var newClient = ClientMapper.ToClient(createClientDTO);
-            createClientUseCase.CreateClient(newClient);
+            createClientUseCase.Create(newClient);
             return Created("", newClient);
         }
 
@@ -56,7 +56,7 @@ namespace Clients_API.Controllers
             }
 
             var formattedCPF = cpfValidationService.CPFToNumericString(cpf);
-            var client = await getClientUseCase.GetClient(formattedCPF);
+            var client = await getClientUseCase.GetByCPF(formattedCPF);
 
             if (client == null)
             {
@@ -67,10 +67,11 @@ namespace Clients_API.Controllers
             return Ok(newClient);
 
         }
+
         [HttpGet]
         public async Task<IActionResult> ListClients()
         {
-            var clientsAsyncEnumerable = listClientsUseCase.ListClients();
+            var clientsAsyncEnumerable = getClientsUseCase.GetAll();
 
             var clientList = new List<Client>();
 

@@ -9,7 +9,6 @@ namespace Charges_Processing_Job
     public class ChargesProcessingJob : IJob
     {
         private readonly ILogger<ChargesProcessingJob> _logger;
-
         static HttpClient httpClient = new HttpClient();
 
         public ChargesProcessingJob(ILogger<ChargesProcessingJob> logger)

@@ -13,7 +13,7 @@ namespace Domain.Clients.UseCases
             this.clientsRepository = clientsRepository;
         }
 
-        public async Task<Client> GetClient(string cpf)
+        public async Task<Client> GetByCPF(string cpf)
         {
             return await clientsRepository.GetByCPF(cpf);
         }

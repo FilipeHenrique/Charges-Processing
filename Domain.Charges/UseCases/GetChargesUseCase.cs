@@ -5,25 +5,28 @@ using System.Runtime.InteropServices;
 
 namespace Domain.Charges.UseCases
 {
-    public class ListChargesUseCase : IListChargesUseCase
+    public class GetChargesUseCase : IGetChargesUseCase
     {
         private readonly IChargesRepository chargesRepository;
-        public ListChargesUseCase(IChargesRepository chargesRepository)
+
+        public GetChargesUseCase(IChargesRepository chargesRepository)
         {
             this.chargesRepository = chargesRepository;
         }
-        public async IAsyncEnumerable<Charge> GetChargesByCPF(string cpf)
+
+        public async IAsyncEnumerable<Charge> GetByCPF(string cpf)
         {
-            var charges = chargesRepository.ListByCPF(cpf);
+            var charges = chargesRepository.GetByCPF(cpf);
 
             await foreach (var charge in charges)
             {
                 yield return charge;
             }            
         }
-        public async IAsyncEnumerable<Charge> GetChargesByMonth(int month)
+
+        public async IAsyncEnumerable<Charge> GetByMonth(int month)
         {
-            var charges = chargesRepository.ListByMonth(month);
+            var charges = chargesRepository.GetByMonth(month);
 
             await foreach (var charge in charges)
             {

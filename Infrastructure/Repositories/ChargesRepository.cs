@@ -19,7 +19,7 @@ namespace Infrastructure.Repositories
             await collection.InsertOneAsync(charge);
         }
 
-        public async IAsyncEnumerable<Charge> ListByCPF(string cpf)
+        public async IAsyncEnumerable<Charge> GetByCPF(string cpf)
         {
             var filter = Builders<Charge>.Filter.Eq("ClientCPF", cpf);
             var charges = await collection.FindAsync(filter);
@@ -33,7 +33,7 @@ namespace Infrastructure.Repositories
             }
         }
 
-        public async IAsyncEnumerable<Charge> ListByMonth(int month)
+        public async IAsyncEnumerable<Charge> GetByMonth(int month)
         {
             var currentYear = DateTime.UtcNow.Year;
 

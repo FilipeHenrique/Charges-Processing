@@ -8,7 +8,7 @@ namespace Domain.Charges.UseCases
         public static void AddUseCases(this IServiceCollection services)
         {
             services.AddTransient<ICreateChargeUseCase, CreateChargeUseCase>();
-            services.AddTransient<IListChargesUseCase, ListChargesUseCase>();
+            services.AddTransient<IGetChargesUseCase, GetChargesUseCase>();
         }
     }
 }
