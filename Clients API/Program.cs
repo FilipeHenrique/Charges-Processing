@@ -1,3 +1,4 @@
+using Clients_API.Middlewares;
 using Domain.Clients.Interfaces.Repositories;
 using Domain.Clients.UseCases;
 using Infrastructure.DbContext;
@@ -40,6 +41,8 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
+
+app.UseMiddleware<ErrorHandlerMiddleware>();
 
 app.MapControllers();
 

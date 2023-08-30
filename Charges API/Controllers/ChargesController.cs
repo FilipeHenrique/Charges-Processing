@@ -25,6 +25,7 @@ namespace Charges_API.Controllers
         [HttpPost]
         public IActionResult Create(CreateChargeDTO createChargeDTO)
         {
+
             if (!cpfValidationService.IsCpf(createChargeDTO.ClientCPF))
             {
                 return BadRequest("Invalid CPF.");
@@ -36,7 +37,7 @@ namespace Charges_API.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAll(string? cpf = null, int? month = null)
+        public async Task<IActionResult> GetAll(string cpf = null, int? month = null)
         {
             if (string.IsNullOrWhiteSpace(cpf) && month == null)
             {
@@ -48,7 +49,7 @@ namespace Charges_API.Controllers
                 return BadRequest("Only one filter is permitted, choose between cpf or dueDate");
             }
 
-            IAsyncEnumerable<Charge>? chargesAsyncEnumerable = null;
+            IAsyncEnumerable<Charge> chargesAsyncEnumerable = null;
 
             if (!string.IsNullOrWhiteSpace(cpf))
             {

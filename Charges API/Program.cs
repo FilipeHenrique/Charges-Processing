@@ -1,3 +1,4 @@
+using Charges_API.Middlewares;
 using Domain.Charges.Interfaces.Repositories;
 using Domain.Charges.UseCases;
 using Infrastructure.DbContext;
@@ -40,6 +41,8 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
+
+app.UseMiddleware<ErrorHandlerMiddleware>();
 
 app.MapControllers();
 
