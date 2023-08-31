@@ -9,26 +9,13 @@ namespace Charges_Processing_Job
 {
     public class ChargesProcessingJob : IJob
     {
-        private readonly ILogger<ChargesProcessingJob> _logger;
         static HttpClient httpClient = new HttpClient();
-
-        public ChargesProcessingJob(ILogger<ChargesProcessingJob> logger)
-        {
-            _logger = logger;
-        }
 
         public async Task Execute(IJobExecutionContext context)
         {
-            try
-            {
-                var clients = GetClients();
-                var reportList = await CreateCharges(clients);
-                Report(reportList);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError($"ERROR: {ex.Message}");
-            }
+            var clients = GetClients();
+            var reportList = await CreateCharges(clients);
+            Report(reportList);
         }
 
         private async IAsyncEnumerable<Client> GetClients()
@@ -87,7 +74,6 @@ namespace Charges_Processing_Job
             {
                 foreach (var charge in totalChargesByState)
                 {
-                    _logger.LogInformation($"{charge.state}: {charge.total}");
                     writer.WriteLine($"State: {charge.state}, Total: {charge.total}");
                 }
             }
