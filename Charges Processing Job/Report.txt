@@ -1,0 +1,2 @@
+State: MG, Total: 1486
+State: RJ, Total: 7680

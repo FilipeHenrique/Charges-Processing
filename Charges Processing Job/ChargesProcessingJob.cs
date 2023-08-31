@@ -1,6 +1,7 @@
 ﻿using Domain.Charges.Entities;
 using Domain.Clients.Entities;
 using Microsoft.Extensions.Logging;
+using MongoDB.Driver.Linq;
 using Quartz;
 using System.Text.Json;
 
@@ -20,30 +21,35 @@ namespace Charges_Processing_Job
         {
             try
             {
-                var response = await GetClients();
-                var clients = JsonSerializer.Deserialize<IAsyncEnumerable<Client>>(response);
-                var chargesByState = await ProcessCharges(clients);
-                MapReduce(chargesByState);
+                var clients = GetClients();
+                var reportList = await CreateCharges(clients);
+                Report(reportList);
             }
             catch (Exception ex)
             {
-                _logger.LogInformation($"ERROR: {ex.Message}");
-                throw new HttpRequestException($"Processing failed with error: {ex.Message}");
+                _logger.LogError($"ERROR: {ex.Message}");
             }
         }
 
-        private async Task<string> GetClients()
+        private async IAsyncEnumerable<Client> GetClients()
         {
             var clientsResponse = await httpClient.GetAsync("http://localhost:7085/clients");
             clientsResponse.EnsureSuccessStatusCode();
-            return await clientsResponse.Content.ReadAsStringAsync();
+
+            var json = await clientsResponse.Content.ReadAsStringAsync();
+            var clients = JsonSerializer.Deserialize<IAsyncEnumerable<Client>>(json);
+
+            await foreach (var client in clients)
+            {
+                yield return client;
+            }
         }
 
-        private async Task<List<(string state, float value)>> ProcessCharges(IAsyncEnumerable<Client> clients)
+        private async Task<List<(string state, float value)>> CreateCharges(IAsyncEnumerable<Client> clients)
         {
-            List<(string state, float value)> chargesList = new List<(string, float)>();
+            List<(string state, float value)> reportList = new List<(string, float)>();
 
-            await foreach (Client client in clients)
+            await foreach (var client in clients)
             {
                 var extractedDigits = $"{client.CPF[0]}{client.CPF[1]}{client.CPF[9]}{client.CPF[10]}";
                 var chargeValue = float.Parse(extractedDigits);
@@ -57,26 +63,33 @@ namespace Charges_Processing_Job
                 var chargeResponse = await httpClient.PostAsync("http://localhost:7289/charges", content);
                 chargeResponse.EnsureSuccessStatusCode();
 
-                chargesList.Add((client.State, chargeValue));
+                reportList.Add((client.State, chargeValue));
             }
 
-            return chargesList;
+            return reportList;
         }
 
-        private void MapReduce(List<(string state, float value)> chargesList)
+        private void Report(List<(string state, float value)> reportList)
         {
-            var totalChargesByState = chargesList
+            var totalChargesByState = reportList
                 .GroupBy(charge => charge.state)
                 .Select(group => new
                 {
-                    State = group.Key,
-                    Total = group.Sum(charge => charge.value)
+                    state = group.Key,
+                    total = group.Sum(charge => charge.value)
                 })
-                .OrderBy(charge => charge.State);
+                .OrderBy(charge => charge.state);
 
-            foreach (var charge in totalChargesByState)
+            var currentDirectory = Directory.GetCurrentDirectory();
+            var desiredDirectory = Path.GetFullPath(Path.Combine(currentDirectory, "..", "..", "..")); // removes \bin\Debug\net6.0
+            var filePath = Path.Combine(desiredDirectory, "Report.txt");
+            using (var writer = new StreamWriter(filePath, false))
             {
-                _logger.LogInformation($"{charge.State}: {charge.Total}");
+                foreach (var charge in totalChargesByState)
+                {
+                    _logger.LogInformation($"{charge.state}: {charge.total}");
+                    writer.WriteLine($"State: {charge.state}, Total: {charge.total}");
+                }
             }
         }
     }
