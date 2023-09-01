@@ -22,9 +22,9 @@ builder.Services.AddSingleton<IDBContext>(new DBContext(connectionString, databa
 builder.Services.AddTransient<ICPFValidationService, CPFValidationService>();
 
 /// Repositories
-builder.Services.AddTransient<IRepository<Client>>(a =>
+builder.Services.AddTransient<IRepository<Client>>(provider =>
 {
-    var database = a.GetService<IDBContext>();
+    var database = provider.GetService<IDBContext>();
     return new ClientsRepository<Client>(database, "Clients");
 });
 
