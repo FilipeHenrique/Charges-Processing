@@ -1,6 +1,5 @@
 ﻿using Domain.Charges.Entities;
 using Domain.Clients.Entities;
-using Microsoft.Extensions.Logging;
 using MongoDB.Driver.Linq;
 using Quartz;
 using System.Text.Json;

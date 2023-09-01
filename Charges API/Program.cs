@@ -13,7 +13,7 @@ var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;
 var connectionString = configuration.GetSection("ChargesDatabase:ConnectionString").Value;
 var databaseName = configuration.GetSection("ChargesDatabase:DatabaseName").Value;
-builder.Services.AddSingleton<IMongoDBContext>(new MongoDBContext(connectionString, databaseName));
+builder.Services.AddSingleton<IDBContext>(new DBContext(connectionString, databaseName));
 
 /// Common Services
 builder.Services.AddTransient<ICPFValidationService, CPFValidationService>();

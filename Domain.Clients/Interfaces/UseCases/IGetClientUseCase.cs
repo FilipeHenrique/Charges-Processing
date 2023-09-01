@@ -4,6 +4,6 @@ namespace Domain.Clients.Interfaces.UseCases
 {
     public interface IGetClientUseCase
     {
-        Task<Client> GetByCPF(string cpf);
+        Client GetByCPF(string cpf);
     }
 }

@@ -2,11 +2,11 @@
 
 namespace Infrastructure.DbContext
 {
-    public class MongoDBContext : IMongoDBContext
+    public class DBContext : IDBContext
     {
         private readonly IMongoDatabase database;
 
-        public MongoDBContext(string connectionString, string databaseName)
+        public DBContext(string connectionString, string databaseName)
         {
             var client = new MongoClient(connectionString);
             database = client.GetDatabase(databaseName);

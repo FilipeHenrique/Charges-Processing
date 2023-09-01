@@ -9,7 +9,7 @@ namespace Infrastructure.Repositories
     {
         private readonly IMongoCollection<Charge> collection;
 
-        public ChargesRepository(IMongoDBContext context)
+        public ChargesRepository(IDBContext context)
         {
             collection = context.GetCollection<Charge>("Charges");
         }

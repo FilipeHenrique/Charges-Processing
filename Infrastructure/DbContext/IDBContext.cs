@@ -2,7 +2,7 @@
 
 namespace Infrastructure.DbContext
 {
-    public interface IMongoDBContext
+    public interface IDBContext
     {
         IMongoDatabase Database { get; }
         IMongoCollection<T> GetCollection<T>(string collectionName);

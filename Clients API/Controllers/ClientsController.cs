@@ -35,7 +35,7 @@ namespace Clients_API.Controllers
             var formattedCPF = cpfValidationService.CPFToNumericString(createClientDTO.CPF);
             createClientDTO.CPF = formattedCPF;
 
-            var client = await getClientUseCase.GetByCPF(createClientDTO.CPF);
+            var client = getClientUseCase.GetByCPF(createClientDTO.CPF);
 
             if (client != null)
             {
@@ -56,7 +56,7 @@ namespace Clients_API.Controllers
             }
 
             var formattedCPF = cpfValidationService.CPFToNumericString(cpf);
-            var client = await getClientUseCase.GetByCPF(formattedCPF);
+            var client = getClientUseCase.GetByCPF(formattedCPF);
 
             if (client == null)
             {
