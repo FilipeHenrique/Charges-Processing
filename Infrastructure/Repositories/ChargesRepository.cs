@@ -1,59 +1,12 @@
-﻿using Domain.Charges.Entities;
-using Domain.Charges.Interfaces.Repositories;
-using Infrastructure.DbContext;
-using MongoDB.Driver;
+﻿using Infrastructure.DbContext;
 
 namespace Infrastructure.Repositories
 {
-    public class ChargesRepository : IChargesRepository
+    public class ChargesRepository<T> : BaseRepository<T> where T : class
     {
-        private readonly IMongoCollection<Charge> collection;
-
-        public ChargesRepository(IDBContext context)
+        public ChargesRepository(IDBContext context, string collectionName) : base(context, collectionName)
         {
-            collection = context.GetCollection<Charge>("Charges");
-        }
 
-        public async Task Create(Charge charge)
-        {
-            await collection.InsertOneAsync(charge);
-        }
-
-        public async IAsyncEnumerable<Charge> GetByCPF(string cpf)
-        {
-            var filter = Builders<Charge>.Filter.Eq("ClientCPF", cpf);
-            var charges = await collection.FindAsync(filter);
-
-            while (await charges.MoveNextAsync())
-            {
-                foreach (var charge in charges.Current)
-                {
-                    yield return charge;
-                }
-            }
-        }
-
-        public async IAsyncEnumerable<Charge> GetByMonth(int month)
-        {
-            var currentYear = DateTime.UtcNow.Year;
-
-            var startDate = new DateTime(currentYear, month, 1);
-            var endDate = startDate.AddMonths(1);
-
-            var filter = Builders<Charge>.Filter.And(
-                Builders<Charge>.Filter.Gte("DueDate", startDate),
-                Builders<Charge>.Filter.Lt("DueDate", endDate)
-            );
-
-            var charges = await collection.FindAsync(filter);
-
-            while (await charges.MoveNextAsync())
-            {
-                foreach (var charge in charges.Current)
-                {
-                    yield return charge;
-                }
-            }
         }
     }
 }

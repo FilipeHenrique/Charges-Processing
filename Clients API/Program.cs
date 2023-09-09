@@ -1,12 +1,8 @@
-using Clients_API.Middlewares;
 using Domain.Clients.Entities;
-using Domain.Clients.Interfaces;
-using Domain.Clients.UseCases;
 using Infrastructure.DbContext;
+using Infrastructure.Middlewares;
 using Infrastructure.Repositories;
 using Infrastructure.Services;
-using MongoDB.Driver;
-using System.Collections;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,7 +15,7 @@ var databaseName = configuration.GetSection("ChargesDatabase:DatabaseName").Valu
 builder.Services.AddSingleton<IDBContext>(new DBContext(connectionString, databaseName));
 
 /// Common Services
-builder.Services.AddTransient<ICPFValidationService, CPFValidationService>();
+builder.Services.AddTransient<ICPFHandler, CPFHandler>();
 
 /// Repositories
 builder.Services.AddTransient<IRepository<Client>>(provider =>
@@ -27,9 +23,6 @@ builder.Services.AddTransient<IRepository<Client>>(provider =>
     var database = provider.GetService<IDBContext>();
     return new ClientsRepository<Client>(database, "Clients");
 });
-
-/// Use Cases
-builder.Services.AddUseCases();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -49,7 +42,7 @@ app.UseHttpsRedirection();
 
 app.UseAuthorization();
 
-app.UseMiddleware<ErrorHandlerMiddleware>();
+app.AddErrorHandlingMiddleware();
 
 app.MapControllers();
 

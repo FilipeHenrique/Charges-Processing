@@ -1,7 +1,7 @@
 ﻿using Charges_API.DTO;
 using Charges_API.Mappers;
 using Domain.Charges.Entities;
-using Domain.Charges.Interfaces.UseCases;
+using Infrastructure.Repositories;
 using Infrastructure.Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -11,68 +11,76 @@ namespace Charges_API.Controllers
     [Route("[controller]")]
     public class ChargesController : Controller
     {
-        private readonly IGetChargesUseCase getChargesUseCase;
-        private readonly ICPFValidationService cpfValidationService;
-        private readonly ICreateChargeUseCase createChargeUseCase;
+        private readonly ICPFHandler cpfHandler;
+        private readonly IRepository<Charge> repository;
 
-        public ChargesController(IGetChargesUseCase getChargesUseCase, ICPFValidationService cpfValidationService, ICreateChargeUseCase createChargeUseCase)
+        public ChargesController(ICPFHandler cpfHandler, IRepository<Charge> repository)
         {
-            this.getChargesUseCase = getChargesUseCase;
-            this.cpfValidationService = cpfValidationService;
-            this.createChargeUseCase = createChargeUseCase;
+            this.cpfHandler = cpfHandler;
+            this.repository = repository;
         }
 
         [HttpPost]
-        public IActionResult Create(CreateChargeDTO createChargeDTO)
+        public IActionResult Create(ChargesDTO chargeDTO)
         {
 
-            if (!cpfValidationService.IsCpf(createChargeDTO.ClientCPF))
+            if (!cpfHandler.IsCpf(chargeDTO.ClientCPF))
             {
                 return BadRequest("Invalid CPF.");
             }
-            var formattedCPF = cpfValidationService.CPFToNumericString(createChargeDTO.ClientCPF);
-            var newCharge = new Charge(createChargeDTO.Value, createChargeDTO.DueDate, formattedCPF);
-            createChargeUseCase.Create(newCharge);
+            var formattedCPF = cpfHandler.CPFToNumericString(chargeDTO.ClientCPF);
+            var newCharge = new Charge(chargeDTO.Value, chargeDTO.DueDate, formattedCPF);
+            repository.Create(newCharge);
             return Created("", newCharge);
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAll(string cpf = null, int? month = null)
+        public IActionResult GetAll(string cpf = null, int? month = null)
         {
             if (string.IsNullOrWhiteSpace(cpf) && month == null)
             {
                 return BadRequest("Atleast one query param is necessary, please specify cpf or dueDate");
             }
 
+            var charges = repository.Get();
+
             if (!string.IsNullOrWhiteSpace(cpf) && month != null)
             {
-                return BadRequest("Only one filter is permitted, choose between cpf or dueDate");
-            }
-
-            IAsyncEnumerable<Charge> chargesAsyncEnumerable = null;
-
-            if (!string.IsNullOrWhiteSpace(cpf))
-            {
-                if (!cpfValidationService.IsCpf(cpf))
+                if (!cpfHandler.IsCpf(cpf))
                 {
                     return BadRequest("Invalid CPF.");
                 }
-                string formattedCPF = cpfValidationService.CPFToNumericString(cpf);
-                chargesAsyncEnumerable = getChargesUseCase.GetByCPF(formattedCPF);
+
+                string formattedCPF = cpfHandler.CPFToNumericString(cpf);
+
+                var currentYear = DateTime.UtcNow.Year;
+                var startDate = new DateTime(currentYear, (int)month, 1);
+                var endDate = startDate.AddMonths(1);
+
+                charges = charges.Where(charge => charge.ClientCPF == formattedCPF)
+                    .Where(charge => charge.DueDate > startDate && charge.DueDate < endDate);
+            }
+
+            if (!string.IsNullOrWhiteSpace(cpf))
+            {
+                if (!cpfHandler.IsCpf(cpf))
+                {
+                    return BadRequest("Invalid CPF.");
+                }
+                string formattedCPF = cpfHandler.CPFToNumericString(cpf);
+                charges = charges.Where(charge => charge.ClientCPF == formattedCPF);
             }
 
             if (month != null)
             {
-                chargesAsyncEnumerable = getChargesUseCase.GetByMonth((int)month);
+                var currentYear = DateTime.UtcNow.Year;
+                var startDate = new DateTime(currentYear, (int)month, 1);
+                var endDate = startDate.AddMonths(1);
+
+                charges = charges.Where(charge => charge.DueDate > startDate && charge.DueDate < endDate);
             }
 
-            var chargesList = new List<Charge>();
-            await foreach(Charge charge in chargesAsyncEnumerable)
-            {
-                chargesList.Add(charge);
-            }
-
-            return Ok(ChargeMapper.ListToDTO(chargesList));
+            return Ok(ChargeMapper.ListToDTO(charges));
         }
     }
 }

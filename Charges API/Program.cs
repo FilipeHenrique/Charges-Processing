@@ -1,7 +1,6 @@
-using Charges_API.Middlewares;
-using Domain.Charges.Interfaces.Repositories;
-using Domain.Charges.UseCases;
+using Domain.Charges.Entities;
 using Infrastructure.DbContext;
+using Infrastructure.Middlewares;
 using Infrastructure.Repositories;
 using Infrastructure.Services;
 
@@ -16,13 +15,14 @@ var databaseName = configuration.GetSection("ChargesDatabase:DatabaseName").Valu
 builder.Services.AddSingleton<IDBContext>(new DBContext(connectionString, databaseName));
 
 /// Common Services
-builder.Services.AddTransient<ICPFValidationService, CPFValidationService>();
+builder.Services.AddTransient<ICPFHandler, CPFHandler>();
 
 /// Repositories
-builder.Services.AddTransient<IChargesRepository, ChargesRepository>();
-
-/// Use Cases
-builder.Services.AddUseCases();
+builder.Services.AddTransient<IRepository<Charge>>(provider =>
+{
+    var database = provider.GetService<IDBContext>();
+    return new ChargesRepository<Charge>(database, "Charges");
+});
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -42,7 +42,7 @@ app.UseHttpsRedirection();
 
 app.UseAuthorization();
 
-app.UseMiddleware<ErrorHandlerMiddleware>();
+app.AddErrorHandlingMiddleware();
 
 app.MapControllers();
 

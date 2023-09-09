@@ -1,6 +1,6 @@
 ﻿namespace Infrastructure.Services
 {
-    public class CPFValidationService : ICPFValidationService
+    public class CPFHandler : ICPFHandler
     {
         public bool IsCpf(string cpf)
         {

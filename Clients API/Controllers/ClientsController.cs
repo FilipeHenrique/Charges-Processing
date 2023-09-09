@@ -1,7 +1,7 @@
 ﻿using Clients_API.DTO;
 using Clients_API.Mappers;
 using Domain.Clients.Entities;
-using Domain.Clients.Interfaces.UseCases;
+using Infrastructure.Repositories;
 using Infrastructure.Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -11,67 +11,64 @@ namespace Clients_API.Controllers
     [ApiController]
     public class ClientsController : Controller
     {
-        private readonly ICreateClientUseCase createClientUseCase;
-        private readonly IGetClientUseCase getClientUseCase;
-        private readonly IGetAllClientsUseCase getClientsUseCase;
-        private readonly ICPFValidationService cpfValidationService;
+        private readonly ICPFHandler cpfHandler;
+        private readonly IRepository<Client> repository;
 
-        public ClientsController(ICreateClientUseCase createClientUseCase, ICPFValidationService cPFValidationService, IGetClientUseCase getClientUseCase, IGetAllClientsUseCase listClientsUseCase)
+        public ClientsController(ICPFHandler cpfHandler, IRepository<Client> repository)
         {
-            this.createClientUseCase = createClientUseCase;
-            this.getClientUseCase = getClientUseCase;
-            this.getClientsUseCase = listClientsUseCase;
-            this.cpfValidationService = cPFValidationService;
+            this.cpfHandler = cpfHandler;
+            this.repository = repository;
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateClient(CreateClientDTO createClientDTO)
+        public IActionResult CreateClient(ClientDTO clientDTO)
         {
-            if (!cpfValidationService.IsCpf(createClientDTO.CPF))
+            if (!cpfHandler.IsCpf(clientDTO.CPF))
             {
                 return BadRequest("Invalid CPF.");
             }
 
-            var formattedCPF = cpfValidationService.CPFToNumericString(createClientDTO.CPF);
-            createClientDTO.CPF = formattedCPF;
+            var formattedCPF = cpfHandler.CPFToNumericString(clientDTO.CPF);
+            clientDTO.CPF = formattedCPF;
 
-            var client = getClientUseCase.GetByCPF(createClientDTO.CPF);
+            var client = repository.Get().Where(client => client.CPF == clientDTO.CPF);
 
             if (client != null)
             {
                 return BadRequest("CPF already exists.");
             }
 
-            var newClient = ClientMapper.ToClient(createClientDTO);
-            createClientUseCase.Create(newClient);
+            var newClient = ClientMapper.ToClient(clientDTO);
+            repository.Create(newClient);
             return Created("", newClient);
         }
 
         [HttpGet("{cpf}")]
-        public async Task<IActionResult> GetClient(string cpf)
+        public ActionResult<Client> GetClient(string cpf)
         {
-            if (!cpfValidationService.IsCpf(cpf))
+            if (!cpfHandler.IsCpf(cpf))
             {
                 return BadRequest("Invalid CPF.");
             }
 
-            var formattedCPF = cpfValidationService.CPFToNumericString(cpf);
-            var client = getClientUseCase.GetByCPF(formattedCPF);
+            var formattedCPF = cpfHandler.CPFToNumericString(cpf);
+            var client = repository.Get().FirstOrDefault(client => client.CPF == formattedCPF);
 
             if (client == null)
             {
                 return NotFound("Client not found.");
             }
 
-            var newClient = ClientMapper.ToCreateClientDTO(client);
+            var newClient = ClientMapper.ToClientDTO(client);
+
             return Ok(newClient);
 
         }
 
         [HttpGet]
-        public async Task<IActionResult> ListClients()
+        public async Task<IActionResult> GetAll()
         {
-            var clientsAsyncEnumerable = getClientsUseCase.GetAll();
+            var clientsAsyncEnumerable = repository.GetAll();
 
             var clientList = new List<Client>();
 

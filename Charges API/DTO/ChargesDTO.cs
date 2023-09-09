@@ -3,9 +3,9 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Charges_API.DTO
 {
-    public class CreateChargeDTO
+    public class ChargesDTO
     {
-        public CreateChargeDTO(float value, DateTime dueDate, string clientCPF)
+        public ChargesDTO(float value, DateTime dueDate, string clientCPF)
         {
             Value = value;
             DueDate = dueDate;

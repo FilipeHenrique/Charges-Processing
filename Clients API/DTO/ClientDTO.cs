@@ -2,9 +2,9 @@
 
 namespace Clients_API.DTO
 {
-    public class CreateClientDTO
+    public class ClientDTO
     {
-        public CreateClientDTO(string name, string state, string cpf)
+        public ClientDTO(string name, string state, string cpf)
         {
             Name = name;
             State = state;

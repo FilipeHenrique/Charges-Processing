@@ -1,5 +1,4 @@
-﻿using Domain.Clients.Interfaces;
-using Infrastructure.DbContext;
+﻿using Infrastructure.DbContext;
 using MongoDB.Bson;
 using MongoDB.Driver;
 

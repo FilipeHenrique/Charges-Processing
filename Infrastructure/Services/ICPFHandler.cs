@@ -1,6 +1,6 @@
 ﻿namespace Infrastructure.Services
 {
-    public interface ICPFValidationService
+    public interface ICPFHandler
     {
         bool IsCpf(string cpf);
         string CPFToNumericString(string cpf);

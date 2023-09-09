@@ -1,8 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using System.Net;
 using System.Text.Json;
 
-namespace Charges_API.Middlewares
+namespace Infrastructure.Middlewares
 {
     public class ErrorHandlerMiddleware
     {
