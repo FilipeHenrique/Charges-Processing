@@ -1,6 +1,6 @@
 using Domain.Clients.Entities;
 using Infrastructure.DbContext;
-using Infrastructure.Middlewares;
+using Infrastructure.Middlewares.ErrorHandler;
 using Infrastructure.Repositories;
 using Infrastructure.Services;
 

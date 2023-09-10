@@ -4,7 +4,7 @@ using Microsoft.Extensions.Logging;
 using System.Net;
 using System.Text.Json;
 
-namespace Infrastructure.Middlewares
+namespace Infrastructure.Middlewares.ErrorHandler
 {
     public class ErrorHandlerMiddleware
     {

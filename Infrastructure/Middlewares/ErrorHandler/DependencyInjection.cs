@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Builder;
-namespace Infrastructure.Middlewares
+namespace Infrastructure.Middlewares.ErrorHandler
 {
     public static class DependencyInjection
     {

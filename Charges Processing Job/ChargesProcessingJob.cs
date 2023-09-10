@@ -10,11 +10,12 @@ namespace Charges_Processing_Job
     {
         static HttpClient httpClient = new HttpClient();
 
-        public async Task Execute(IJobExecutionContext context)
+        public Task Execute(IJobExecutionContext context)
         {
             var clients = GetClients();
             var reportList = CreateCharges(clients);
-            //Report(reportList);
+            Report(reportList);
+            return Task.CompletedTask;
         }
 
         private async IAsyncEnumerable<Client> GetClients()
@@ -53,27 +54,27 @@ namespace Charges_Processing_Job
 
         }
 
-        //private void Report(IAsyncEnumerable<(string state, float value)> reportList)
-        //{
-        //    var totalChargesByState = reportList
-        //        .GroupBy(charge => charge.state)
-        //        .Select(group => new
-        //        {
-        //            state = group.Key,
-        //            total = group.Sum(charge => charge.value)
-        //        })
-        //        .OrderBy(charge => charge.state);
+        private async void Report(IAsyncEnumerable<(string state, float value)> reportList)
+        {
+            var totalChargesByState = reportList
+                .GroupBy(charge => charge.state)
+                .Select(group => new
+                {
+                    state = group.Key,
+                    total = group.SumAsync(charge => charge.value)
+                })
+                .OrderBy(charge => charge.state);
 
-        //    var currentDirectory = Directory.GetCurrentDirectory();
-        //    var desiredDirectory = Path.GetFullPath(Path.Combine(currentDirectory, "..", "..", "..")); // removes \bin\Debug\net6.0
-        //    var filePath = Path.Combine(desiredDirectory, "Report.txt");
-        //    using (var writer = new StreamWriter(filePath, false))
-        //    {
-        //        foreach (var charge in totalChargesByState)
-        //        {
-        //            writer.WriteLine($"State: {charge.state}, Total: {charge.total}");
-        //        }
-        //    }
-        //}
+            var currentDirectory = Directory.GetCurrentDirectory();
+            var desiredDirectory = Path.GetFullPath(Path.Combine(currentDirectory, "..", "..", "..")); // removes \bin\Debug\net6.0
+            var filePath = Path.Combine(desiredDirectory, "Report.txt");
+            using (var writer = new StreamWriter(filePath, false))
+            {
+                await foreach (var charge in totalChargesByState)
+                {
+                    writer.WriteLine($"State: {charge.state}, Total: {charge.total}");
+                }
+            }
+        }
     }
 }
