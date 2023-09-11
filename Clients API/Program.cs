@@ -1,18 +1,19 @@
 using Domain.Clients.Entities;
-using Infrastructure.DbContext;
+using Infrastructure.Database;
 using Infrastructure.Middlewares.ErrorHandler;
 using Infrastructure.Repositories;
 using Infrastructure.Services;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
 //// Add services to the container.
 
 //// Register MongoDB components from Infrastructure
-var configuration = builder.Configuration;
-var connectionString = configuration.GetSection("ChargesDatabase:ConnectionString").Value;
-var databaseName = configuration.GetSection("ChargesDatabase:DatabaseName").Value;
-builder.Services.AddSingleton<IDBContext>(new DBContext(connectionString, databaseName));
+builder.Services.AddDbContext<DBContext<Client>>(options =>
+{
+    options.UseInMemoryDatabase("Clients");
+});
 
 /// Common Services
 builder.Services.AddTransient<ICPFHandler, CPFHandler>();
@@ -20,8 +21,8 @@ builder.Services.AddTransient<ICPFHandler, CPFHandler>();
 /// Repositories
 builder.Services.AddTransient<IRepository<Client>>(provider =>
 {
-    var database = provider.GetService<IDBContext>();
-    return new ClientsRepository<Client>(database, "Clients");
+    var dbContext = provider.GetRequiredService<DBContext<Client>>();
+    return new ClientsRepository<Client>(dbContext);
 });
 
 builder.Services.AddControllers();

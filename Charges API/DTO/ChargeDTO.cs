@@ -1,11 +1,10 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace Charges_API.DTO
 {
-    public class ChargesDTO
+    public class ChargeDTO
     {
-        public ChargesDTO(float value, DateTime dueDate, string clientCPF)
+        public ChargeDTO(float value, DateTime dueDate, string clientCPF)
         {
             Value = value;
             DueDate = dueDate;

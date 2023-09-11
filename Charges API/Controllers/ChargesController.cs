@@ -21,7 +21,7 @@ namespace Charges_API.Controllers
         }
 
         [HttpPost]
-        public IActionResult Create(ChargesDTO chargeDTO)
+        public ActionResult Create(ChargeDTO chargeDTO)
         {
 
             if (!cpfHandler.IsCpf(chargeDTO.ClientCPF))
@@ -35,52 +35,36 @@ namespace Charges_API.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetAll(string cpf = null, int? month = null)
+        public ActionResult GetAll(string cpf, int? month)
         {
             if (string.IsNullOrWhiteSpace(cpf) && month == null)
             {
-                return BadRequest("Atleast one query param is necessary, please specify cpf or dueDate");
+                return BadRequest("Atleast one parameter is necessary.Please specify cpf ou month.");
             }
 
-            var charges = repository.Get();
-
-            if (!string.IsNullOrWhiteSpace(cpf) && month != null)
+            if (!string.IsNullOrWhiteSpace(cpf) && !cpfHandler.IsCpf(cpf))
             {
-                if (!cpfHandler.IsCpf(cpf))
-                {
-                    return BadRequest("Invalid CPF.");
-                }
-
-                string formattedCPF = cpfHandler.CPFToNumericString(cpf);
-
-                var currentYear = DateTime.UtcNow.Year;
-                var startDate = new DateTime(currentYear, (int)month, 1);
-                var endDate = startDate.AddMonths(1);
-
-                charges = charges.Where(charge => charge.ClientCPF == formattedCPF)
-                    .Where(charge => charge.DueDate > startDate && charge.DueDate < endDate);
+                return BadRequest("Invalid CPF.");
             }
+
+            var filteredCharges = repository.Get();
 
             if (!string.IsNullOrWhiteSpace(cpf))
             {
-                if (!cpfHandler.IsCpf(cpf))
-                {
-                    return BadRequest("Invalid CPF.");
-                }
                 string formattedCPF = cpfHandler.CPFToNumericString(cpf);
-                charges = charges.Where(charge => charge.ClientCPF == formattedCPF);
+                filteredCharges = filteredCharges.Where(charge => charge.ClientCPF == formattedCPF);
             }
 
             if (month != null)
             {
                 var currentYear = DateTime.UtcNow.Year;
-                var startDate = new DateTime(currentYear, (int)month, 1);
+                var startDate = new DateTime(currentYear, month.Value, 1);
                 var endDate = startDate.AddMonths(1);
 
-                charges = charges.Where(charge => charge.DueDate > startDate && charge.DueDate < endDate);
+                filteredCharges = filteredCharges.Where(charge => charge.DueDate > startDate && charge.DueDate < endDate);
             }
 
-            return Ok(ChargeMapper.ListToDTO(charges));
+            return Ok(ChargeMapper.ChargesToDTO(filteredCharges));
         }
     }
 }

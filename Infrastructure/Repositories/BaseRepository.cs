@@ -1,38 +1,37 @@
-﻿using Infrastructure.DbContext;
-using MongoDB.Bson;
-using MongoDB.Driver;
+﻿using MongoDB.Driver;
+using Microsoft.EntityFrameworkCore;
+
 
 namespace Infrastructure.Repositories
 {
     public class BaseRepository<T> : IRepository<T> where T : class
     {
-        private readonly IMongoCollection<T> collection;
+        private readonly DbSet<T> dbSet;
+        private readonly DbContext dbContext;
 
-        public BaseRepository(IDBContext context, string collectionName)
+        public BaseRepository(DbContext dbContext)
         {
-            collection = context.GetCollection<T>(collectionName);
+            this.dbContext = dbContext;
+            this.dbSet = dbContext.Set<T>();
         }
 
         public async Task Create(T entity)
         {
-            await collection.InsertOneAsync(entity);
+            await dbSet.AddAsync(entity);
+            await dbContext.SaveChangesAsync();
         }
 
         public IQueryable<T> Get()
         {
-            return collection.AsQueryable();
+            return dbSet;
         }
 
         public async IAsyncEnumerable<T> GetAll()
         {
-            var entitiesCursor = await collection.FindAsync(new BsonDocument());
-
-            while (await entitiesCursor.MoveNextAsync())
+            var entities = await dbSet.ToListAsync();
+            foreach (var entity in entities)
             {
-                foreach (var entity in entitiesCursor.Current)
-                {
-                    yield return entity;
-                }
+                yield return entity;
             }
         }
 

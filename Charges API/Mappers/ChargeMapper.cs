@@ -5,19 +5,19 @@ namespace Charges_API.Mappers
 {
     public class ChargeMapper
     {
-        public static ChargesDTO ToChargeDTO(Charge charge)
+        public static ChargeDTO ToChargeDTO(Charge charge)
         {
-            return new ChargesDTO(charge.Value, charge.DueDate, charge.ClientCPF);
+            return new ChargeDTO(charge.Value, charge.DueDate, charge.ClientCPF);
         }
 
-        public static Charge ToCharge(ChargesDTO createChargeDTO)
+        public static Charge ToCharge(ChargeDTO createChargeDTO)
         {
             return new Charge(createChargeDTO.Value, createChargeDTO.DueDate, createChargeDTO.ClientCPF);
         }
 
-        public static IEnumerable<ChargesDTO> ListToDTO(IEnumerable<Charge> charges)
+        public static IQueryable<ChargeDTO> ChargesToDTO(IQueryable<Charge> charges)
         {
-            return charges.Select(charge => new ChargesDTO(charge.Value, charge.DueDate, charge.ClientCPF));
+            return charges.Select(charge => new ChargeDTO(charge.Value, charge.DueDate, charge.ClientCPF));
         }
     }
 }

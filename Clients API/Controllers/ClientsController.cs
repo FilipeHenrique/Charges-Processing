@@ -21,7 +21,7 @@ namespace Clients_API.Controllers
         }
 
         [HttpPost]
-        public IActionResult CreateClient(ClientDTO clientDTO)
+        public ActionResult CreateClient(ClientDTO clientDTO)
         {
             if (!cpfHandler.IsCpf(clientDTO.CPF))
             {
@@ -29,15 +29,15 @@ namespace Clients_API.Controllers
             }
 
             var formattedCPF = cpfHandler.CPFToNumericString(clientDTO.CPF);
-            clientDTO.CPF = formattedCPF;
 
-            var client = repository.Get().Where(client => client.CPF == clientDTO.CPF);
+            var client = repository.Get().Where(client => client.CPF == formattedCPF);
 
-            if (client != null)
+            if (client.Any())
             {
                 return BadRequest("CPF already exists.");
             }
 
+            clientDTO.CPF = formattedCPF;
             var newClient = ClientMapper.ToClient(clientDTO);
             repository.Create(newClient);
             return Created("", newClient);
@@ -66,18 +66,10 @@ namespace Clients_API.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAll()
+        public IActionResult GetAll()
         {
             var clientsAsyncEnumerable = repository.GetAll();
-
-            var clientList = new List<Client>();
-
-            await foreach (var client in clientsAsyncEnumerable)
-            {
-                clientList.Add(client);
-            }
-
-            return(Ok(ClientMapper.ListToDTO(clientList)));
+            return (Ok(ClientMapper.ClientsToDTO(clientsAsyncEnumerable)));
         }
     }
 }

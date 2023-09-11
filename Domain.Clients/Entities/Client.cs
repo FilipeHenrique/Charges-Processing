@@ -1,23 +1,27 @@
-﻿using MongoDB.Bson.Serialization.Attributes;
-using MongoDB.Bson;
-using System.Text.Json.Serialization;
+﻿using System.Text.Json.Serialization;
 
 namespace Domain.Clients.Entities
 {
     public class Client
     {
+        // Default constructor for EF In memory Mapping
+        public Client()
+        {
+            
+        }
+
         public Client(string name, string state, string cpf)
         {
             Name = name;
             State = state;
             CPF = cpf;
         }
-        public ObjectId Id { get; set; }
+        public Guid Id { get; set; }
         [JsonPropertyName("name")]
-        public string Name { get; private set; }
+        public string Name { get; init; }
         [JsonPropertyName("state")]
-        public string State { get; private set; }
+        public string State { get; init; }
         [JsonPropertyName("cpf")]
-        public string CPF { get; private set; }
+        public string CPF { get; init; }
     }
 }

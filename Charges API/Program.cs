@@ -1,18 +1,19 @@
 using Domain.Charges.Entities;
-using Infrastructure.DbContext;
+using Infrastructure.Database;
 using Infrastructure.Middlewares.ErrorHandler;
 using Infrastructure.Repositories;
 using Infrastructure.Services;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
 //// Register MongoDB components from Infrastructure
-var configuration = builder.Configuration;
-var connectionString = configuration.GetSection("ChargesDatabase:ConnectionString").Value;
-var databaseName = configuration.GetSection("ChargesDatabase:DatabaseName").Value;
-builder.Services.AddSingleton<IDBContext>(new DBContext(connectionString, databaseName));
+builder.Services.AddDbContext<DBContext<Charge>>(options =>
+{
+    options.UseInMemoryDatabase("Charges");
+});
 
 /// Common Services
 builder.Services.AddTransient<ICPFHandler, CPFHandler>();
@@ -20,8 +21,8 @@ builder.Services.AddTransient<ICPFHandler, CPFHandler>();
 /// Repositories
 builder.Services.AddTransient<IRepository<Charge>>(provider =>
 {
-    var database = provider.GetService<IDBContext>();
-    return new ChargesRepository<Charge>(database, "Charges");
+    var dbContext = provider.GetRequiredService<DBContext<Charge>>();
+    return new ChargesRepository<Charge>(dbContext);
 });
 
 builder.Services.AddControllers();

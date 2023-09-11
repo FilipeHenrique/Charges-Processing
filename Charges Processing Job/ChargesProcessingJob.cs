@@ -1,6 +1,5 @@
 ﻿using Domain.Charges.Entities;
 using Domain.Clients.Entities;
-using MongoDB.Driver.Linq;
 using Quartz;
 using System.Text.Json;
 
@@ -8,19 +7,19 @@ namespace Charges_Processing_Job
 {
     public class ChargesProcessingJob : IJob
     {
-        static HttpClient httpClient = new HttpClient();
+        private readonly HttpClient httpClient = new HttpClient();
+        private readonly ApiUrlsConfig apiUrls = new ApiUrlsConfig();
 
         public Task Execute(IJobExecutionContext context)
         {
             var clients = GetClients();
-            var reportList = CreateCharges(clients);
-            Report(reportList);
-            return Task.CompletedTask;
+            var chargesByState = CreateCharges(clients);
+            return Report(chargesByState);
         }
 
         private async IAsyncEnumerable<Client> GetClients()
         {
-            var clientsResponse = await httpClient.GetAsync("http://localhost:7085/clients");
+            var clientsResponse = await httpClient.GetAsync(apiUrls.ClientsApiUrl);
             clientsResponse.EnsureSuccessStatusCode();
 
             var json = await clientsResponse.Content.ReadAsStringAsync();
@@ -46,7 +45,7 @@ namespace Charges_Processing_Job
                 var charge = new Charge(chargeValue, oneMonthFromNow, client.CPF);
 
                 var content = new StringContent(JsonSerializer.Serialize(charge), System.Text.Encoding.UTF8, "application/json");
-                var chargeResponse = await httpClient.PostAsync("http://localhost:7289/charges", content);
+                var chargeResponse = await httpClient.PostAsync(apiUrls.ChargesApiUrl, content);
                 chargeResponse.EnsureSuccessStatusCode();
 
                 yield return (client.State, chargeValue);
@@ -54,9 +53,9 @@ namespace Charges_Processing_Job
 
         }
 
-        private async void Report(IAsyncEnumerable<(string state, float value)> reportList)
+        private async Task Report(IAsyncEnumerable<(string state, float value)> chargesByState)
         {
-            var totalChargesByState = reportList
+            var totalChargesByState = chargesByState
                 .GroupBy(charge => charge.state)
                 .Select(group => new
                 {
@@ -68,12 +67,10 @@ namespace Charges_Processing_Job
             var currentDirectory = Directory.GetCurrentDirectory();
             var desiredDirectory = Path.GetFullPath(Path.Combine(currentDirectory, "..", "..", "..")); // removes \bin\Debug\net6.0
             var filePath = Path.Combine(desiredDirectory, "Report.txt");
-            using (var writer = new StreamWriter(filePath, false))
+            using var writer = new StreamWriter(filePath, false);
+            await foreach (var charge in totalChargesByState)
             {
-                await foreach (var charge in totalChargesByState)
-                {
-                    writer.WriteLine($"State: {charge.state}, Total: {charge.total}");
-                }
+                writer.WriteLine($"State: {charge.state}, Total: {charge.total}");
             }
         }
     }

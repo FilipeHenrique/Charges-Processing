@@ -15,9 +15,12 @@ namespace Clients_API.Mappers
             return new Client(clientDTO.Name, clientDTO.State, clientDTO.CPF);
         }
 
-        public static IEnumerable<ClientDTO> ListToDTO(IEnumerable<Client> clients)
+        public static async IAsyncEnumerable<ClientDTO> ClientsToDTO(IAsyncEnumerable<Client> clients)
         {
-            return clients.Select(client => new ClientDTO(client.Name, client.State, client.CPF));
+            await foreach (var client in clients)
+            {
+                yield return new ClientDTO(client.Name, client.State, client.CPF);
+            }
         }
     }
 }
