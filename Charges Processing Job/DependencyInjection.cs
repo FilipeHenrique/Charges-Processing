@@ -16,7 +16,7 @@ namespace Charges_Processing_Job
                         trigger
                             .ForJob(jobKey)
                             .WithSimpleSchedule(schedule =>
-                                schedule.WithIntervalInSeconds(10).RepeatForever()
+                                schedule.WithIntervalInSeconds(60).RepeatForever()
                             )
                         );
             });

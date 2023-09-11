@@ -17,11 +17,8 @@ namespace Domain.Clients.Entities
             CPF = cpf;
         }
         public Guid Id { get; set; }
-        [JsonPropertyName("name")]
         public string Name { get; init; }
-        [JsonPropertyName("state")]
         public string State { get; init; }
-        [JsonPropertyName("cpf")]
         public string CPF { get; init; }
     }
 }

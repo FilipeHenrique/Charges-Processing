@@ -1,7 +1,7 @@
 ﻿using Domain.Charges.Entities;
 using Domain.Clients.Entities;
 using Quartz;
-using System.Text.Json;
+using System.Net.Http.Json;
 
 namespace Charges_Processing_Job
 {
@@ -22,8 +22,7 @@ namespace Charges_Processing_Job
             var clientsResponse = await httpClient.GetAsync(apiUrls.ClientsApiUrl);
             clientsResponse.EnsureSuccessStatusCode();
 
-            var json = await clientsResponse.Content.ReadAsStringAsync();
-            var clients = JsonSerializer.Deserialize<IAsyncEnumerable<Client>>(json);
+            var clients = await clientsResponse.Content.ReadFromJsonAsync<IAsyncEnumerable<Client>>();
 
             await foreach (var client in clients)
             {
@@ -44,8 +43,7 @@ namespace Charges_Processing_Job
 
                 var charge = new Charge(chargeValue, oneMonthFromNow, client.CPF);
 
-                var content = new StringContent(JsonSerializer.Serialize(charge), System.Text.Encoding.UTF8, "application/json");
-                var chargeResponse = await httpClient.PostAsync(apiUrls.ChargesApiUrl, content);
+                var chargeResponse = await httpClient.PostAsJsonAsync(apiUrls.ChargesApiUrl, charge);
                 chargeResponse.EnsureSuccessStatusCode();
 
                 yield return (client.State, chargeValue);
