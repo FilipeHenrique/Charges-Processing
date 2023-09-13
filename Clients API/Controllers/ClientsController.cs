@@ -59,14 +59,14 @@ namespace Clients_API.Controllers
                 return NotFound("Client not found.");
             }
 
-            var newClient = ClientMapper.ToClientDTO(client);
+            var outputClient = ClientMapper.ToClientDTO(client);
 
-            return Ok(newClient);
+            return Ok(outputClient);
 
         }
 
         [HttpGet]
-        public IActionResult GetAll()
+        public ActionResult GetAll()
         {
             var clientsAsyncEnumerable = repository.GetAll();
             return (Ok(ClientMapper.ClientsToDTO(clientsAsyncEnumerable)));
