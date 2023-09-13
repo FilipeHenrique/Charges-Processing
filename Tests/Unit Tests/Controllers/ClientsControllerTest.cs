@@ -78,7 +78,7 @@ namespace Tests.Unit_Tests.Controllers
         }
 
         [Fact]
-        public void GetClient_IsValidCPF_ReturnsSearchedClient()
+        public void GetClient_IsValidCPF_ReturnsClient()
         {
             // Arrange
             var mockCPFHandler = new Mock<ICPFHandler>();
@@ -156,7 +156,7 @@ namespace Tests.Unit_Tests.Controllers
         }
 
         [Fact]
-        public async void GetAll_ReturnsOkResult()
+        public async void GetAll_ReturnsClients()
         {
             // Arrange
             var mockRepository = new Mock<IRepository<Client>>();

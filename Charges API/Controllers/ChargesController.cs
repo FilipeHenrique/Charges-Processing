@@ -39,7 +39,7 @@ namespace Charges_API.Controllers
         {
             if (string.IsNullOrWhiteSpace(cpf) && month == null)
             {
-                return BadRequest("Atleast one parameter is necessary.Please specify cpf ou month.");
+                return BadRequest("Atleast one parameter is necessary. Please specify cpf or month.");
             }
 
             if (!string.IsNullOrWhiteSpace(cpf) && !cpfHandler.IsCpf(cpf))
