@@ -10,17 +10,23 @@ namespace Tests.Unit_Tests.Controllers
 {
     public class ClientsControllerTest
     {
+        private readonly Mock<ICPFHandler> mockCPFHandler;
+        private readonly Mock<IRepository<Client>> mockRepository;
+        private readonly ClientsController controller;
+
+        public ClientsControllerTest()
+        {
+            mockCPFHandler = new Mock<ICPFHandler>();
+            mockRepository = new Mock<IRepository<Client>>();
+            controller = new ClientsController(mockCPFHandler.Object, mockRepository.Object);
+        }
+
         [Fact]
         public void CreateClient_ValidDTO_ReturnsCreatedResult()
         {
             // Arrange
-            var mockCPFHandler = new Mock<ICPFHandler>();
-            var mockRepository = new Mock<IRepository<Client>>();
-
             mockCPFHandler.Setup(handler => handler.IsCpf(It.IsAny<string>())).Returns(true);
-
             var clientDTO = new ClientDTO("Carlos", "RJ", "960.747.590-90");
-            var controller = new ClientsController(mockCPFHandler.Object, mockRepository.Object);
 
             // Act
             var result = controller.CreateClient(clientDTO);
@@ -33,13 +39,8 @@ namespace Tests.Unit_Tests.Controllers
         public void CreateClient_InvalidCPF_ReturnsBadRequest()
         {
             // Arrange
-            var mockCPFHandler = new Mock<ICPFHandler>();
-            var mockRepository = new Mock<IRepository<Client>>();
-
             mockCPFHandler.Setup(handler => handler.IsCpf(It.IsAny<string>())).Returns(false);
-
             var clientDTO = new ClientDTO("Carlos", "RJ", "960.747.590-91");
-            var controller = new ClientsController(mockCPFHandler.Object, mockRepository.Object);
 
             // Act
             var result = controller.CreateClient(clientDTO);
@@ -52,9 +53,6 @@ namespace Tests.Unit_Tests.Controllers
         public void CreateClient_DuplicateCPF_ReturnsBadRequest()
         {
             // Arrange
-            var mockCPFHandler = new Mock<ICPFHandler>();
-            var mockRepository = new Mock<IRepository<Client>>();
-
             var expectedClient = new Client
             {
                 Name = "Carlos",
@@ -68,22 +66,19 @@ namespace Tests.Unit_Tests.Controllers
                 .Returns(new List<Client> { expectedClient }.AsQueryable());
 
             var clientDTO = new ClientDTO("Carlos", "RJ", "960.747.590-90");
-            var controller = new ClientsController(mockCPFHandler.Object, mockRepository.Object);
 
             // Act
             var result = controller.CreateClient(clientDTO);
 
             // Assert
-            Assert.IsType<BadRequestObjectResult>(result);
+            var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
+            Assert.Equal("CPF already exists.", badRequestResult.Value);
         }
 
         [Fact]
         public void GetClient_IsValidCPF_ReturnsClient()
         {
             // Arrange
-            var mockCPFHandler = new Mock<ICPFHandler>();
-            var mockRepository = new Mock<IRepository<Client>>();
-
             var expectedClient = new Client
             {
                 Name = "Carlos",
@@ -97,7 +92,6 @@ namespace Tests.Unit_Tests.Controllers
                 .Returns(new List<Client> { expectedClient }.AsQueryable());
 
             var clientDTO = ClientMapper.ToClientDTO(expectedClient);
-            var controller = new ClientsController(mockCPFHandler.Object, mockRepository.Object);
 
             // Act
             var unformattedClientCPF = "960.747.590-90";
@@ -116,11 +110,7 @@ namespace Tests.Unit_Tests.Controllers
         public void GetClient_WithInvalidCpf_ReturnsBadRequest()
         {
             // Arrange
-            var mockCPFHandler = new Mock<ICPFHandler>();
-
             mockCPFHandler.Setup(handler => handler.IsCpf(It.IsAny<string>())).Returns(false);
-
-            var controller = new ClientsController(mockCPFHandler.Object, null);
 
             // Act
             var unformattedClientCPF = "960.747.590-91";
@@ -136,14 +126,9 @@ namespace Tests.Unit_Tests.Controllers
         public void GetClient_ClientNotFound_ReturnsNotFound()
         {
             // Arrange
-            var mockCPFHandler = new Mock<ICPFHandler>();
-            var mockRepository = new Mock<IRepository<Client>>();
-
             mockCPFHandler.Setup(handler => handler.IsCpf(It.IsAny<string>())).Returns(true);
             mockCPFHandler.Setup(handler => handler.CPFToNumericString(It.IsAny<string>())).Returns("96074759090");
             mockRepository.Setup(repository => repository.Get()).Returns(new List<Client> { }.AsQueryable());
-
-            var controller = new ClientsController(mockCPFHandler.Object, mockRepository.Object);
 
             // Act
             var unformattedClientCPF = "960.747.590-90";
@@ -159,9 +144,6 @@ namespace Tests.Unit_Tests.Controllers
         public async void GetAll_ReturnsClients()
         {
             // Arrange
-            var mockRepository = new Mock<IRepository<Client>>();
-            var controller = new ClientsController(null, mockRepository.Object);
-
             var clients = new List<Client>
             {
                 new Client {

@@ -9,17 +9,24 @@ namespace Tests.Unit_Tests.Controllers
 {
     public class ChargesControllerTest
     {
+        private readonly Mock<ICPFHandler> mockCPFHandler;
+        private readonly Mock<IRepository<Charge>> mockRepository;
+        private readonly ChargesController controller;
+
+        public ChargesControllerTest()
+        {
+            mockCPFHandler = new Mock<ICPFHandler>();
+            mockRepository = new Mock<IRepository<Charge>>();
+            controller = new ChargesController(mockCPFHandler.Object, mockRepository.Object);
+        }
+
         [Fact]
         public void CreateCharge_ValidDTO_ReturnsCreatedResult()
         {
             // Arrange
-            var mockCPFHandler = new Mock<ICPFHandler>();
-            var mockRepository = new Mock<IRepository<Charge>>();
-
             mockCPFHandler.Setup(handler => handler.IsCpf(It.IsAny<string>())).Returns(true);
-
             var chargeDTO = new ChargeDTO(10, DateTime.Now, "960.747.590-90");
-            var controller = new ChargesController(mockCPFHandler.Object, mockRepository.Object);
+
             // Act
             var result = controller.Create(chargeDTO);
 
@@ -31,11 +38,7 @@ namespace Tests.Unit_Tests.Controllers
         public void CreateCharge_InvalidCPF_ReturnsBadRequest()
         {
             // Arrange
-            var mockCPFHandler = new Mock<ICPFHandler>();
-            var mockRepository = new Mock<IRepository<Charge>>();
-
             var chargeDTO = new ChargeDTO(10, DateTime.Now, "960.747.590-91");
-            var controller = new ChargesController(mockCPFHandler.Object, mockRepository.Object);
 
             // Act
             var result = controller.Create(chargeDTO);
@@ -48,9 +51,6 @@ namespace Tests.Unit_Tests.Controllers
         public void GetAll_FilteredByCPF_ReturnsFilteredCharges()
         {
             // Arrange
-            var mockCPFHandler = new Mock<ICPFHandler>();
-            var mockRepository = new Mock<IRepository<Charge>>();
-
             var charges = new List<Charge>
             {
                 new Charge { ClientCPF = "12345678901", DueDate = DateTime.Now, Value = 10 },
@@ -61,8 +61,6 @@ namespace Tests.Unit_Tests.Controllers
             };
 
             var clientCPF = "960.747.590-90";
-            var controller = new ChargesController(mockCPFHandler.Object, mockRepository.Object);
-
             mockCPFHandler.Setup(handler => handler.IsCpf(It.IsAny<string>())).Returns(true);
             mockCPFHandler.Setup(handler => handler.CPFToNumericString(It.IsAny<string>())).Returns("96074759090");
             mockRepository.Setup(repo => repo.Get()).Returns(charges.AsQueryable());
@@ -80,9 +78,6 @@ namespace Tests.Unit_Tests.Controllers
         public void GetAll_FilteredByMonth_ReturnsFilteredCharges()
         {
             // Arrange
-            var mockCPFHandler = new Mock<ICPFHandler>();
-            var mockRepository = new Mock<IRepository<Charge>>();
-
             var charges = new List<Charge>
             {
                 new Charge { ClientCPF = "12345678901", DueDate = DateTime.Now, Value = 10 },
@@ -91,8 +86,6 @@ namespace Tests.Unit_Tests.Controllers
             };
 
             var month = DateTime.Now.AddMonths(1).Month;
-            var controller = new ChargesController(mockCPFHandler.Object, mockRepository.Object);
-
             mockRepository.Setup(repo => repo.Get()).Returns(charges.AsQueryable());
 
             // Act
@@ -108,9 +101,6 @@ namespace Tests.Unit_Tests.Controllers
         public void GetAll_FilteredByCPFAndMonth_ReturnsFilteredCharges()
         {
             // Arrange
-            var mockCPFHandler = new Mock<ICPFHandler>();
-            var mockRepository = new Mock<IRepository<Charge>>();
-
             var charges = new List<Charge>
             {
                 new Charge { ClientCPF = "12345678901", DueDate = DateTime.Now, Value = 10 },
@@ -122,9 +112,6 @@ namespace Tests.Unit_Tests.Controllers
 
             var clientCPF = "960.747.590-90";
             var month = DateTime.Now.AddMonths(1).Month;
-
-            var controller = new ChargesController(mockCPFHandler.Object, mockRepository.Object);
-
             mockCPFHandler.Setup(handler => handler.IsCpf(It.IsAny<string>())).Returns(true);
             mockCPFHandler.Setup(handler => handler.CPFToNumericString(It.IsAny<string>())).Returns("96074759090");
             mockRepository.Setup(repo => repo.Get()).Returns(charges.AsQueryable());
@@ -141,9 +128,6 @@ namespace Tests.Unit_Tests.Controllers
         [Fact]
         public void GetAll_NoParameters_ReturnsBadRequest()
         {
-            // Arrange
-            var controller = new ChargesController(null, null);
-
             // Act
             var result = controller.GetAll(null, null);
 
@@ -155,12 +139,6 @@ namespace Tests.Unit_Tests.Controllers
         [Fact]
         public void GetAll_InvalidCPF_ReturnsBadRequest()
         {
-            // Arrange
-            var mockCPFHandler = new Mock<ICPFHandler>();
-            var mockRepository = new Mock<IRepository<Charge>>();
-
-            var controller = new ChargesController(mockCPFHandler.Object, mockRepository.Object);
-
             // Act
             var invalidCPF = "960.747.590-91";
             var result = controller.GetAll(invalidCPF, null);

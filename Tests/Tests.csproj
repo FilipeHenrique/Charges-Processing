@@ -32,4 +32,8 @@
     <ProjectReference Include="..\Infrastructure\Infrastructure.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Unit Tests\Charges Processing Job\" />
+  </ItemGroup>
+
 </Project>
