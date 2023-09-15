@@ -2,6 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
+    <RootNamespace>Charges_Processing_Job.Tests</RootNamespace>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
 
@@ -31,11 +32,6 @@
     <ProjectReference Include="..\Clients API\Clients API.csproj" />
     <ProjectReference Include="..\Domain.Charges\Domain.Charges.csproj" />
     <ProjectReference Include="..\Domain.Clients\Domain.Clients.csproj" />
-    <ProjectReference Include="..\Infrastructure\Infrastructure.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Integration Tests\Charges API\" />
   </ItemGroup>
 
 </Project>

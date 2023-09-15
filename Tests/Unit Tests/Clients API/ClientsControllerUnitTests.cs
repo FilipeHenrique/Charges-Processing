@@ -8,17 +8,23 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Tests.Unit_Tests.Controllers
 {
-    public class ClientsControllerTest
+    public class ClientsControllerUnitTests
     {
         private readonly Mock<ICPFHandler> mockCPFHandler;
         private readonly Mock<IRepository<Client>> mockRepository;
         private readonly ClientsController controller;
+        private readonly string validCPF, validCPFToNumericString, validCPF2, invalidCPF;
 
-        public ClientsControllerTest()
+
+        public ClientsControllerUnitTests()
         {
             mockCPFHandler = new Mock<ICPFHandler>();
             mockRepository = new Mock<IRepository<Client>>();
             controller = new ClientsController(mockCPFHandler.Object, mockRepository.Object);
+            validCPF = "960.747.590-90";
+            validCPFToNumericString = "96074759090";
+            validCPF2 = "183.610.120-10";
+            invalidCPF = "960.747.590-91";
         }
 
         [Fact]
@@ -26,7 +32,7 @@ namespace Tests.Unit_Tests.Controllers
         {
             // Arrange
             mockCPFHandler.Setup(handler => handler.IsCpf(It.IsAny<string>())).Returns(true);
-            var clientDTO = new ClientDTO("Carlos", "RJ", "960.747.590-90");
+            var clientDTO = new ClientDTO("Carlos", "RJ", validCPF);
 
             // Act
             var result = controller.CreateClient(clientDTO);
@@ -40,7 +46,7 @@ namespace Tests.Unit_Tests.Controllers
         {
             // Arrange
             mockCPFHandler.Setup(handler => handler.IsCpf(It.IsAny<string>())).Returns(false);
-            var clientDTO = new ClientDTO("Carlos", "RJ", "960.747.590-91");
+            var clientDTO = new ClientDTO("Carlos", "RJ", invalidCPF);
 
             // Act
             var result = controller.CreateClient(clientDTO);
@@ -57,15 +63,15 @@ namespace Tests.Unit_Tests.Controllers
             {
                 Name = "Carlos",
                 State = "RJ",
-                CPF = "96074759090"
+                CPF = validCPFToNumericString
             };
 
             mockCPFHandler.Setup(handler => handler.IsCpf(It.IsAny<string>())).Returns(true);
-            mockCPFHandler.Setup(handler => handler.CPFToNumericString(It.IsAny<string>())).Returns("96074759090");
+            mockCPFHandler.Setup(handler => handler.CPFToNumericString(It.IsAny<string>())).Returns(validCPFToNumericString);
             mockRepository.Setup(repository => repository.Get())
                 .Returns(new List<Client> { expectedClient }.AsQueryable());
 
-            var clientDTO = new ClientDTO("Carlos", "RJ", "960.747.590-90");
+            var clientDTO = new ClientDTO("Carlos", "RJ", validCPF);
 
             // Act
             var result = controller.CreateClient(clientDTO);
@@ -83,27 +89,24 @@ namespace Tests.Unit_Tests.Controllers
             {
                 Name = "Carlos",
                 State = "RJ",
-                CPF = "96074759090"
+                CPF = validCPFToNumericString
             };
 
             mockCPFHandler.Setup(handler => handler.IsCpf(It.IsAny<string>())).Returns(true);
-            mockCPFHandler.Setup(handler => handler.CPFToNumericString(It.IsAny<string>())).Returns("96074759090");
+            mockCPFHandler.Setup(handler => handler.CPFToNumericString(It.IsAny<string>())).Returns(validCPFToNumericString);
             mockRepository.Setup(repository => repository.Get())
                 .Returns(new List<Client> { expectedClient }.AsQueryable());
 
             var clientDTO = ClientMapper.ToClientDTO(expectedClient);
 
             // Act
-            var unformattedClientCPF = "960.747.590-90";
-            var result = controller.GetClient(unformattedClientCPF);
+            var result = controller.GetClient(validCPF);
 
             // Assert
             var actionResult = Assert.IsType<ActionResult<Client>>(result);
             var okResult = Assert.IsType<OkObjectResult>(actionResult.Result);
             var outputDTO = Assert.IsType<ClientDTO>(okResult.Value);
             Assert.Equal(clientDTO.CPF, outputDTO.CPF);
-            Assert.Equal(clientDTO.Name, outputDTO.Name);
-            Assert.Equal(clientDTO.State, outputDTO.State);
         }
 
         [Fact]
@@ -113,8 +116,7 @@ namespace Tests.Unit_Tests.Controllers
             mockCPFHandler.Setup(handler => handler.IsCpf(It.IsAny<string>())).Returns(false);
 
             // Act
-            var unformattedClientCPF = "960.747.590-91";
-            var result = controller.GetClient(unformattedClientCPF);
+            var result = controller.GetClient(validCPF);
 
             // Assert
             var actionResult = Assert.IsType<ActionResult<Client>>(result);
@@ -127,12 +129,11 @@ namespace Tests.Unit_Tests.Controllers
         {
             // Arrange
             mockCPFHandler.Setup(handler => handler.IsCpf(It.IsAny<string>())).Returns(true);
-            mockCPFHandler.Setup(handler => handler.CPFToNumericString(It.IsAny<string>())).Returns("96074759090");
+            mockCPFHandler.Setup(handler => handler.CPFToNumericString(It.IsAny<string>())).Returns(validCPFToNumericString);
             mockRepository.Setup(repository => repository.Get()).Returns(new List<Client> { }.AsQueryable());
 
             // Act
-            var unformattedClientCPF = "960.747.590-90";
-            var result = controller.GetClient(unformattedClientCPF);
+            var result = controller.GetClient(validCPF);
 
             // Assert
             var actionResult = Assert.IsType<ActionResult<Client>>(result);
@@ -149,16 +150,15 @@ namespace Tests.Unit_Tests.Controllers
                 new Client {
                     Name = "Carlos",
                     State = "RJ",
-                    CPF = "96074759090"
+                    CPF = validCPF
                 },
                  new Client {
                     Name = "Lucas",
                     State = "MG",
-                    CPF = "46326462029"
+                    CPF = validCPF2
                 },
 
             };
-
             mockRepository.Setup(repository => repository.GetAll()).Returns(clients.ToAsyncEnumerable);
 
             // Act

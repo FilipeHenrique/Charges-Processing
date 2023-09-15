@@ -2,13 +2,21 @@
 using Domain.Clients.Entities;
 using Quartz;
 using System.Net.Http.Json;
+using System.Text;
+using System.Text.Json;
 
 namespace Charges_Processing_Job
 {
     public class ChargesProcessingJob : IJob
     {
-        private readonly HttpClient httpClient = new HttpClient();
-        private readonly ApiUrlsConfig apiUrls = new ApiUrlsConfig();
+        private readonly HttpClient httpClient;
+        private readonly ApiUrlsConfig apiUrls;
+
+        public ChargesProcessingJob(HttpClient httpClient, ApiUrlsConfig apiUrls)
+        {
+            this.httpClient = httpClient;
+            this.apiUrls = apiUrls;
+        }
 
         public Task Execute(IJobExecutionContext context)
         {
@@ -17,7 +25,7 @@ namespace Charges_Processing_Job
             return Report(chargesByState);
         }
 
-        private async IAsyncEnumerable<Client> GetClients()
+        public async IAsyncEnumerable<Client> GetClients()
         {
             var clientsResponse = await httpClient.GetAsync(apiUrls.ClientsApiUrl);
             clientsResponse.EnsureSuccessStatusCode();
@@ -30,7 +38,7 @@ namespace Charges_Processing_Job
             }
         }
 
-        private async IAsyncEnumerable<(string state, float value)> CreateCharges(IAsyncEnumerable<Client> clients)
+        public async IAsyncEnumerable<(string state, float value)> CreateCharges(IAsyncEnumerable<Client> clients)
         {
 
             await foreach (var client in clients)
@@ -42,8 +50,9 @@ namespace Charges_Processing_Job
                 var oneMonthFromNow = currentDate.AddMonths(1);
 
                 var charge = new Charge(chargeValue, oneMonthFromNow, client.CPF);
+                var content = new StringContent(JsonSerializer.Serialize(charge), Encoding.UTF8, "application/json");
 
-                var chargeResponse = await httpClient.PostAsJsonAsync(apiUrls.ChargesApiUrl, charge);
+                var chargeResponse = await httpClient.PostAsync(apiUrls.ChargesApiUrl, content);
                 chargeResponse.EnsureSuccessStatusCode();
 
                 yield return (client.State, chargeValue);
@@ -51,7 +60,7 @@ namespace Charges_Processing_Job
 
         }
 
-        private async Task Report(IAsyncEnumerable<(string state, float value)> chargesByState)
+        public async Task Report(IAsyncEnumerable<(string state, float value)> chargesByState)
         {
             var totalChargesByState = chargesByState
                 .GroupBy(charge => charge.state)

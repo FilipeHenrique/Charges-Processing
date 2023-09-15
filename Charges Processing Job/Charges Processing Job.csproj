@@ -18,5 +18,9 @@
     <ProjectReference Include="..\Domain.Charges\Domain.Charges.csproj" />
     <ProjectReference Include="..\Domain.Clients\Domain.Clients.csproj" />
   </ItemGroup>
-
+	
+	<ItemGroup>
+		<InternalsVisibleTo Include="Charges Processing Job.Tests" />
+	</ItemGroup>
+	
 </Project>

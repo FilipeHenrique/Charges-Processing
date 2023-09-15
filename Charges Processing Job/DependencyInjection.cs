@@ -7,6 +7,9 @@ namespace Charges_Processing_Job
     {
         public static void AddJob(this IServiceCollection services)
         {
+            services.AddTransient<HttpClient>();
+            services.AddSingleton<ApiUrlsConfig>();
+
             services.AddQuartz(options =>
             {
                 var jobKey = JobKey.Create(nameof(ChargesProcessingJob));
@@ -19,6 +22,7 @@ namespace Charges_Processing_Job
                                 schedule.WithIntervalInSeconds(60).RepeatForever()
                             )
                         );
+
             });
             services.AddQuartzHostedService();
         }

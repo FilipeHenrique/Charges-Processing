@@ -3,23 +3,24 @@
 namespace Tests.Unit_Tests.Services
 {
 
-    public class CPFHandlerTests
+    public class CPFHandlerUnitTests
     {
         private CPFHandler cpfHandler;
+        private readonly string validCPF, validCPFToNumericString, invalidCPF;
 
-        public CPFHandlerTests()
+        public CPFHandlerUnitTests()
         {
             cpfHandler = new CPFHandler();
+            validCPF = "960.747.590-90";
+            validCPFToNumericString = "96074759090";
+            invalidCPF = "960.747.590-91";
         }
 
         [Fact]
         public void IsCpf_ValidCpf_ReturnsTrue()
         {
-            // Arrange
-            string validCpf = "463.264.620-29";
-
             // Act
-            bool result = cpfHandler.IsCpf(validCpf);
+            bool result = cpfHandler.IsCpf(validCPF);
 
             // Assert
             Assert.True(result);
@@ -28,11 +29,8 @@ namespace Tests.Unit_Tests.Services
         [Fact]
         public void IsCpf_InvalidCpf_ReturnsFalse()
         {
-            // Arrange
-            string invalidCpf = "463.264.620-21";
-
             // Act
-            bool result = cpfHandler.IsCpf(invalidCpf);
+            bool result = cpfHandler.IsCpf(invalidCPF);
 
             // Assert
             Assert.False(result);
@@ -41,15 +39,11 @@ namespace Tests.Unit_Tests.Services
         [Fact]
         public void CPFToNumericString_ValidCpf_ReturnsNumericString()
         {
-            // Arrange
-            string cpf = "463.264.620-29";
-            string expectedFormattedCPF = "46326462029";
-
             // Act
-            string result = cpfHandler.CPFToNumericString(cpf);
+            string result = cpfHandler.CPFToNumericString(validCPF);
 
             // Assert
-            Assert.Equal(expectedFormattedCPF, result);
+            Assert.Equal(validCPFToNumericString, result);
         }
     }
 }

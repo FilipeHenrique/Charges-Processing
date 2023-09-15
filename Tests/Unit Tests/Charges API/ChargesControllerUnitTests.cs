@@ -7,17 +7,21 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Tests.Unit_Tests.Controllers
 {
-    public class ChargesControllerTest
+    public class ChargesControllerUnitTests
     {
         private readonly Mock<ICPFHandler> mockCPFHandler;
         private readonly Mock<IRepository<Charge>> mockRepository;
         private readonly ChargesController controller;
+        private readonly string validCPF, validCPFToNumericString, invalidCPF;
 
-        public ChargesControllerTest()
+        public ChargesControllerUnitTests()
         {
             mockCPFHandler = new Mock<ICPFHandler>();
             mockRepository = new Mock<IRepository<Charge>>();
             controller = new ChargesController(mockCPFHandler.Object, mockRepository.Object);
+            validCPF = "960.747.590-90";
+            validCPFToNumericString = "96074759090";
+            invalidCPF = "960.747.590-91";
         }
 
         [Fact]
@@ -25,7 +29,7 @@ namespace Tests.Unit_Tests.Controllers
         {
             // Arrange
             mockCPFHandler.Setup(handler => handler.IsCpf(It.IsAny<string>())).Returns(true);
-            var chargeDTO = new ChargeDTO(10, DateTime.Now, "960.747.590-90");
+            var chargeDTO = new ChargeDTO(10, DateTime.Now, validCPF);
 
             // Act
             var result = controller.Create(chargeDTO);
@@ -38,7 +42,7 @@ namespace Tests.Unit_Tests.Controllers
         public void CreateCharge_InvalidCPF_ReturnsBadRequest()
         {
             // Arrange
-            var chargeDTO = new ChargeDTO(10, DateTime.Now, "960.747.590-91");
+            var chargeDTO = new ChargeDTO(10, DateTime.Now, invalidCPF);
 
             // Act
             var result = controller.Create(chargeDTO);
@@ -54,19 +58,16 @@ namespace Tests.Unit_Tests.Controllers
             var charges = new List<Charge>
             {
                 new Charge { ClientCPF = "12345678901", DueDate = DateTime.Now, Value = 10 },
-                new Charge { ClientCPF = "12345678901", DueDate = DateTime.Now, Value = 11 },
-                new Charge { ClientCPF = "98765432109", DueDate = DateTime.Now, Value = 30 },
-                new Charge { ClientCPF = "96074759090", DueDate = DateTime.Now, Value = 20 },
-                new Charge { ClientCPF = "96074759090", DueDate = DateTime.Now, Value = 25 },
+                new Charge { ClientCPF = validCPFToNumericString, DueDate = DateTime.Now, Value = 20 },
+                new Charge { ClientCPF = validCPFToNumericString, DueDate = DateTime.Now, Value = 25 },
             };
 
-            var clientCPF = "960.747.590-90";
             mockCPFHandler.Setup(handler => handler.IsCpf(It.IsAny<string>())).Returns(true);
-            mockCPFHandler.Setup(handler => handler.CPFToNumericString(It.IsAny<string>())).Returns("96074759090");
+            mockCPFHandler.Setup(handler => handler.CPFToNumericString(It.IsAny<string>())).Returns(validCPFToNumericString);
             mockRepository.Setup(repo => repo.Get()).Returns(charges.AsQueryable());
 
             // Act
-            var result = controller.GetAll(clientCPF, null);
+            var result = controller.GetAll(validCPF, null);
 
             // Assert
             var okResult = Assert.IsType<OkObjectResult>(result);
@@ -82,7 +83,7 @@ namespace Tests.Unit_Tests.Controllers
             {
                 new Charge { ClientCPF = "12345678901", DueDate = DateTime.Now, Value = 10 },
                 new Charge { ClientCPF = "12345678901", DueDate = DateTime.Now, Value = 11 },
-                new Charge { ClientCPF = "98765432109", DueDate = DateTime.Now.AddMonths(1), Value = 30 },
+                new Charge { ClientCPF = validCPFToNumericString, DueDate = DateTime.Now.AddMonths(1), Value = 30 },
             };
 
             var month = DateTime.Now.AddMonths(1).Month;
@@ -103,21 +104,18 @@ namespace Tests.Unit_Tests.Controllers
             // Arrange
             var charges = new List<Charge>
             {
-                new Charge { ClientCPF = "12345678901", DueDate = DateTime.Now, Value = 10 },
-                new Charge { ClientCPF = "12345678901", DueDate = DateTime.Now, Value = 11 },
-                new Charge { ClientCPF = "98765432109", DueDate = DateTime.Now, Value = 30 },
-                new Charge { ClientCPF = "96074759090", DueDate = DateTime.Now, Value = 20 },
-                new Charge { ClientCPF = "98765432109", DueDate = DateTime.Now.AddMonths(1), Value = 30 },
+                new Charge { ClientCPF = validCPFToNumericString, DueDate = DateTime.Now.AddMonths(1), Value = 30 },
+                new Charge { ClientCPF = "12345678901", DueDate = DateTime.Now, Value = 30 },
+                new Charge { ClientCPF = "12345678901", DueDate = DateTime.Now, Value = 20 },
             };
 
-            var clientCPF = "960.747.590-90";
             var month = DateTime.Now.AddMonths(1).Month;
             mockCPFHandler.Setup(handler => handler.IsCpf(It.IsAny<string>())).Returns(true);
-            mockCPFHandler.Setup(handler => handler.CPFToNumericString(It.IsAny<string>())).Returns("96074759090");
+            mockCPFHandler.Setup(handler => handler.CPFToNumericString(It.IsAny<string>())).Returns(validCPFToNumericString);
             mockRepository.Setup(repo => repo.Get()).Returns(charges.AsQueryable());
 
             // Act
-            var result = controller.GetAll(clientCPF, null);
+            var result = controller.GetAll(validCPF, null);
 
             // Assert
             var okResult = Assert.IsType<OkObjectResult>(result);
@@ -140,7 +138,6 @@ namespace Tests.Unit_Tests.Controllers
         public void GetAll_InvalidCPF_ReturnsBadRequest()
         {
             // Act
-            var invalidCPF = "960.747.590-91";
             var result = controller.GetAll(invalidCPF, null);
 
             // Assert
