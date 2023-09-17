@@ -19,11 +19,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Clients API.Tests", "Client
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Testing", "Testing", "{4004B5C6-2E66-44BE-8A21-E31BB2139751}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Charges API.Tests", "Charges API.Tests\Charges API.Tests.csproj", "{76773E06-4C58-4F24-90B2-AF4DADF2867F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Charges API.Tests", "Charges API.Tests\Charges API.Tests.csproj", "{76773E06-4C58-4F24-90B2-AF4DADF2867F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Charges Processing Job.Tests", "Charges Processing Job.Tests\Charges Processing Job.Tests.csproj", "{BBED2F89-501A-4E8A-8224-82FB2D41EA28}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Charges Processing Job.Tests", "Charges Processing Job.Tests\Charges Processing Job.Tests.csproj", "{BBED2F89-501A-4E8A-8224-82FB2D41EA28}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure.Tests", "Infrastructure.Tests\Infrastructure.Tests.csproj", "{AC7CB31D-F43C-41BD-8ECC-B2D00B38CE14}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Infrastructure.Tests", "Infrastructure.Tests\Infrastructure.Tests.csproj", "{AC7CB31D-F43C-41BD-8ECC-B2D00B38CE14}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
