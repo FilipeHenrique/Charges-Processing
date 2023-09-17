@@ -5,16 +5,10 @@ namespace Infrastructure.Tests
 
     public class CPFHandlerUnitTests
     {
-        private CPFHandler cpfHandler;
-        private readonly string validCPF, validCPFToNumericString, invalidCPF;
-
-        public CPFHandlerUnitTests()
-        {
-            cpfHandler = new CPFHandler();
-            validCPF = "960.747.590-90";
-            validCPFToNumericString = "96074759090";
-            invalidCPF = "960.747.590-91";
-        }
+        private CPFHandler cpfHandler = new CPFHandler();
+        private const string validCPF = "960.747.590-90";
+        private const string validCPFToNumericString = "96074759090";
+        private const string invalidCPF = "960.747.590-91";
 
         [Fact]
         public void IsCpf_ValidCpf_ReturnsTrue()

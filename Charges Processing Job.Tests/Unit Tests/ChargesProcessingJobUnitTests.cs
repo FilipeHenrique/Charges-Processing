@@ -10,16 +10,10 @@ namespace Tests.Unit_Tests.Charges_Processing_Job
 {
     public class ChargesProcessingJobUnitTests
     {
-        private readonly Mock<ApiUrlsConfig> mockApiUrlsConfig;
-        private readonly Mock<HttpMessageHandler> mockHttpMessageHandler;
-        private readonly string validCPF, validCPF2;
-
-        public ChargesProcessingJobUnitTests() {
-            mockApiUrlsConfig = new Mock<ApiUrlsConfig>();
-            mockHttpMessageHandler = new Mock<HttpMessageHandler>();
-            validCPF = "960.747.590-90";
-            validCPF2 = "183.610.120-10";
-        }
+        private readonly Mock<ApiUrlsConfig> mockApiUrlsConfig = new Mock<ApiUrlsConfig>();
+        private readonly Mock<HttpMessageHandler> mockHttpMessageHandler = new Mock<HttpMessageHandler>();
+        private const string validCPF = "960.747.590-90";
+        private const string validCPF2 = "183.610.120-10";
 
         [Fact]
         public async Task GetClients_Should_Return_Clients()

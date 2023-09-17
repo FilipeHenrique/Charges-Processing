@@ -7,17 +7,15 @@ namespace Clients_API.Tests
 {
     public class ClientsControllerIntegrationTests
     {
-        private readonly WebApplicationFactory<Program> factory;
+        private readonly WebApplicationFactory<Program> factory = new WebApplicationFactory<Program>();
         private readonly HttpClient httpClient;
-        private readonly string validCPF, validCPF2, invalidCPF;
+        private const string validCPF = "960.747.590-90";
+        private const string validCPF2 = "183.610.120-10";
+        private const string invalidCPF = "960.747.590-91";
 
         public ClientsControllerIntegrationTests()
         {
-            factory = new WebApplicationFactory<Program>();
             httpClient = factory.CreateClient();
-            validCPF = "960.747.590-90";
-            validCPF2 = "183.610.120-10";
-            invalidCPF = "960.747.590-91";
         }
 
         [Fact]

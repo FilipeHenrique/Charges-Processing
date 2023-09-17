@@ -9,19 +9,16 @@ namespace Tests.Unit_Tests.Controllers
 {
     public class ChargesControllerUnitTests
     {
-        private readonly Mock<ICPFHandler> mockCPFHandler;
-        private readonly Mock<IRepository<Charge>> mockRepository;
+        private readonly Mock<ICPFHandler> mockCPFHandler = new Mock<ICPFHandler>();
+        private readonly Mock<IRepository<Charge>> mockRepository = new Mock<IRepository<Charge>>();
         private readonly ChargesController controller;
-        private readonly string validCPF, validCPFToNumericString, invalidCPF;
+        private const string validCPF = "960.747.590-90";
+        private const string validCPFToNumericString = "96074759090";
+        private const string invalidCPF = "960.747.590-91";
 
         public ChargesControllerUnitTests()
         {
-            mockCPFHandler = new Mock<ICPFHandler>();
-            mockRepository = new Mock<IRepository<Charge>>();
             controller = new ChargesController(mockCPFHandler.Object, mockRepository.Object);
-            validCPF = "960.747.590-90";
-            validCPFToNumericString = "96074759090";
-            invalidCPF = "960.747.590-91";
         }
 
         [Fact]

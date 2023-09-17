@@ -10,21 +10,18 @@ namespace Clients_API.Tests
 {
     public class ClientsControllerUnitTests
     {
-        private readonly Mock<ICPFHandler> mockCPFHandler;
-        private readonly Mock<IRepository<Client>> mockRepository;
+        private readonly Mock<ICPFHandler> mockCPFHandler = new Mock<ICPFHandler>();
+        private readonly Mock<IRepository<Client>> mockRepository = new Mock<IRepository<Client>>();
         private readonly ClientsController controller;
-        private readonly string validCPF, validCPFToNumericString, validCPF2, invalidCPF;
+        private const string validCPF = "960.747.590-90";
+        private const string validCPF2 = "183.610.120-10";
+        private const string invalidCPF = "960.747.590-91";
+        private const string validCPFToNumericString = "96074759090";
 
 
         public ClientsControllerUnitTests()
         {
-            mockCPFHandler = new Mock<ICPFHandler>();
-            mockRepository = new Mock<IRepository<Client>>();
             controller = new ClientsController(mockCPFHandler.Object, mockRepository.Object);
-            validCPF = "960.747.590-90";
-            validCPFToNumericString = "96074759090";
-            validCPF2 = "183.610.120-10";
-            invalidCPF = "960.747.590-91";
         }
 
         [Fact]

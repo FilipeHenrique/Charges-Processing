@@ -1,6 +1,4 @@
-﻿using MongoDB.Driver;
-using Microsoft.EntityFrameworkCore;
-
+﻿using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Repositories
 {
@@ -28,8 +26,7 @@ namespace Infrastructure.Repositories
 
         public async IAsyncEnumerable<T> GetAll()
         {
-            var entities = await dbSet.ToListAsync();
-            foreach (var entity in entities)
+            await foreach (var entity in dbSet.AsAsyncEnumerable())
             {
                 yield return entity;
             }
