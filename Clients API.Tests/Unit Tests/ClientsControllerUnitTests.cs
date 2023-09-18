@@ -1,6 +1,5 @@
 ﻿using Clients_API.Controllers;
 using Clients_API.DTO;
-using Clients_API.Mappers;
 using Domain.Clients.Entities;
 using Infrastructure.Repositories;
 using Infrastructure.Services;
@@ -85,14 +84,13 @@ namespace Clients_API.Tests
             mockRepository.Setup(repository => repository.Get())
                 .Returns(new List<Client> { expectedClient }.AsQueryable());
 
-            var clientDTO = ClientMapper.ToClientDTO(expectedClient);
 
             var result = controller.GetClient(validCPF);
 
             var actionResult = Assert.IsType<ActionResult<Client>>(result);
             var okResult = Assert.IsType<OkObjectResult>(actionResult.Result);
-            var outputDTO = Assert.IsType<ClientDTO>(okResult.Value);
-            Assert.Equal(clientDTO.CPF, outputDTO.CPF);
+            var outputClient = Assert.IsType<Client>(okResult.Value);
+            Assert.Equal(expectedClient.CPF, outputClient.CPF);
         }
 
         [Fact]
@@ -144,7 +142,7 @@ namespace Clients_API.Tests
             var result = controller.GetAll();
 
             var okResult = Assert.IsType<OkObjectResult>(result);
-            var clientsAsync = Assert.IsAssignableFrom<IAsyncEnumerable<ClientDTO>>(okResult.Value);
+            var clientsAsync = Assert.IsAssignableFrom<IAsyncEnumerable<Client>>(okResult.Value);
             var clientsSync = await clientsAsync.ToListAsync();
             Assert.Equal(clients.Count, clientsSync.Count);
         }

@@ -1,5 +1,4 @@
 ﻿using Clients_API.DTO;
-using Clients_API.Mappers;
 using Domain.Clients.Entities;
 using Infrastructure.Repositories;
 using Infrastructure.Services;
@@ -31,15 +30,14 @@ namespace Clients_API.Controllers
             var formattedCPF = cpfHandler.CPFToNumericString(clientDTO.CPF);
 
             var client = repository.Get().Where(client => client.CPF == formattedCPF);
-
             if (client.Any())
             {
                 return BadRequest("CPF already exists.");
             }
 
-            clientDTO.CPF = formattedCPF;
-            var newClient = ClientMapper.ToClient(clientDTO);
+            var newClient = new Client(clientDTO.Name,clientDTO.State,formattedCPF);
             repository.Create(newClient);
+            
             return Created("", newClient);
         }
 
@@ -59,17 +57,14 @@ namespace Clients_API.Controllers
                 return NotFound("Client not found.");
             }
 
-            var outputClient = ClientMapper.ToClientDTO(client);
-
-            return Ok(outputClient);
-
+            return Ok(client);
         }
 
         [HttpGet]
         public ActionResult GetAll()
         {
             var clientsAsyncEnumerable = repository.GetAll();
-            return (Ok(ClientMapper.ClientsToDTO(clientsAsyncEnumerable)));
+            return Ok(clientsAsyncEnumerable);
         }
     }
 }

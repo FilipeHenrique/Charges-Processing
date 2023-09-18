@@ -1,5 +1,4 @@
 ﻿using Charges_API.DTO;
-using Charges_API.Mappers;
 using Domain.Charges.Entities;
 using Infrastructure.Repositories;
 using Infrastructure.Services;
@@ -64,7 +63,7 @@ namespace Charges_API.Controllers
                 filteredCharges = filteredCharges.Where(charge => charge.DueDate > startDate && charge.DueDate < endDate);
             }
 
-            return Ok(ChargeMapper.ChargesToDTO(filteredCharges));
+            return Ok(filteredCharges);
         }
     }
 }

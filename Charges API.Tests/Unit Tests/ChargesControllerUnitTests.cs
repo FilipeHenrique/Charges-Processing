@@ -56,7 +56,7 @@ namespace Tests.Unit_Tests.Controllers
             var result = controller.GetAll(validCPF, null);
 
             var okResult = Assert.IsType<OkObjectResult>(result);
-            var chargesQueryable = Assert.IsAssignableFrom<IQueryable<ChargeDTO>>(okResult.Value);
+            var chargesQueryable = Assert.IsAssignableFrom<IQueryable<Charge>>(okResult.Value);
             Assert.Equal(2, chargesQueryable.Count());
         }
 
@@ -76,7 +76,7 @@ namespace Tests.Unit_Tests.Controllers
             var result = controller.GetAll(null, month);
 
             var okResult = Assert.IsType<OkObjectResult>(result);
-            var chargesQueryable = Assert.IsAssignableFrom<IQueryable<ChargeDTO>>(okResult.Value);
+            var chargesQueryable = Assert.IsAssignableFrom<IQueryable<Charge>>(okResult.Value);
             Assert.Equal(1, chargesQueryable.Count());
         }
 
@@ -98,7 +98,7 @@ namespace Tests.Unit_Tests.Controllers
             var result = controller.GetAll(validCPF, null);
 
             var okResult = Assert.IsType<OkObjectResult>(result);
-            var chargesQueryable = Assert.IsAssignableFrom<IQueryable<ChargeDTO>>(okResult.Value);
+            var chargesQueryable = Assert.IsAssignableFrom<IQueryable<Charge>>(okResult.Value);
             Assert.Equal(1, chargesQueryable.Count());
         }
 

@@ -1,5 +1,7 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Quartz;
+using System.Configuration;
 
 namespace Charges_Processing_Job
 {
@@ -19,7 +21,7 @@ namespace Charges_Processing_Job
                         trigger
                             .ForJob(jobKey)
                             .WithSimpleSchedule(schedule =>
-                                schedule.WithIntervalInSeconds(60).RepeatForever()
+                                schedule.WithIntervalInSeconds(20).RepeatForever()
                             )
                         );
 

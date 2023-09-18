@@ -5,17 +5,17 @@ using System.Net.Http.Json;
 using System.Text;
 using System.Text.Json;
 
+
 namespace Charges_Processing_Job
 {
     public class ChargesProcessingJob : IJob
     {
-        private readonly HttpClient httpClient;
-        private readonly ApiUrlsConfig apiUrls;
 
-        public ChargesProcessingJob(HttpClient httpClient, ApiUrlsConfig apiUrls)
+        private readonly IHttpClientFactory httpClientFactory;
+
+        public ChargesProcessingJob(IHttpClientFactory httpClientFactory)
         {
-            this.httpClient = httpClient;
-            this.apiUrls = apiUrls;
+            this.httpClientFactory = httpClientFactory;
         }
 
         public Task Execute(IJobExecutionContext context)
@@ -27,7 +27,8 @@ namespace Charges_Processing_Job
 
         public async IAsyncEnumerable<Client> GetClients()
         {
-            var clientsResponse = await httpClient.GetAsync(apiUrls.ClientsApiUrl);
+            var httpClient = httpClientFactory.CreateClient("ClientsAPI");
+            var clientsResponse = await httpClient.GetAsync("/Clients");
             clientsResponse.EnsureSuccessStatusCode();
 
             var clients = await clientsResponse.Content.ReadFromJsonAsync<IAsyncEnumerable<Client>>();
@@ -40,6 +41,7 @@ namespace Charges_Processing_Job
 
         public async IAsyncEnumerable<(string state, float value)> CreateCharges(IAsyncEnumerable<Client> clients)
         {
+            var httpClient = httpClientFactory.CreateClient("ChargesAPI");
 
             await foreach (var client in clients)
             {
@@ -52,7 +54,7 @@ namespace Charges_Processing_Job
                 var charge = new Charge(chargeValue, oneMonthFromNow, client.CPF);
                 var content = new StringContent(JsonSerializer.Serialize(charge), Encoding.UTF8, "application/json");
 
-                var chargeResponse = await httpClient.PostAsync(apiUrls.ChargesApiUrl, content);
+                var chargeResponse = await httpClient.PostAsync("/Charges", content);
                 chargeResponse.EnsureSuccessStatusCode();
 
                 yield return (client.State, chargeValue);

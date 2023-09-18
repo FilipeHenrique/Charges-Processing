@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Hosting;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 
 namespace Charges_Processing_Job
 {
@@ -15,6 +16,16 @@ namespace Charges_Processing_Job
                 .ConfigureServices((hostContext, services) =>
                 {
                     services.AddJob();
+
+                    services.AddHttpClient("ClientsAPI", httpClient =>
+                    {
+                        httpClient.BaseAddress = new Uri("http://localhost:7085/clients");
+                    });
+
+                    services.AddHttpClient("ChargesAPI", httpClient =>
+                    {
+                        httpClient.BaseAddress = new Uri("http://localhost:7289/charges");
+                    });
                 });
     }
 }

@@ -48,3 +48,11 @@ app.AddErrorHandlingMiddleware();
 app.MapControllers();
 
 app.Run();
+
+namespace Charges_API
+{
+    public partial class Program
+    {
+
+    }
+}

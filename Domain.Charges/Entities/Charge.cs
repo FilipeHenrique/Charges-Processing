@@ -16,6 +16,7 @@ namespace Domain.Charges.Entities
             DueDate = dueDate;
             ClientCPF = clientCPF;
         }
+
         public Guid Id { get; set; }
         public DateTime DueDate { get; init; }
         public string ClientCPF { get; init; }
