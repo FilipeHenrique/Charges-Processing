@@ -5,7 +5,6 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Domain.Clients.Entities;
 using Domain.Charges.Entities;
-using Xunit.Abstractions;
 
 namespace End_to_End_Tests
 {
