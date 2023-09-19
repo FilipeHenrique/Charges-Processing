@@ -18,7 +18,7 @@ namespace End_to_End_Tests
         private const string validCPF = "960.747.590-90";
         private const string validCPF2 = "183.610.120-10";
 
-        public EndToEndTests(ITestOutputHelper output)
+        public EndToEndTests()
         {
             clientsApiHttpClient = clientsAPI.CreateClient();
             chargesApiHttpClient = chargesAPI.CreateClient();
