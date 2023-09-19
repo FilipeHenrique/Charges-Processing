@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
 namespace Charges_Processing_Job
@@ -15,16 +16,22 @@ namespace Charges_Processing_Job
             Host.CreateDefaultBuilder(args)
                 .ConfigureServices((hostContext, services) =>
                 {
+                    IConfiguration configuration = new ConfigurationBuilder()
+                        .SetBasePath(Directory.GetCurrentDirectory()) 
+                        .AddJsonFile("appsettings.json")
+                        .Build();
+                    services.AddSingleton(configuration);
+
                     services.AddJob();
 
                     services.AddHttpClient("ClientsAPI", httpClient =>
                     {
-                        httpClient.BaseAddress = new Uri("http://localhost:7085/clients");
+                        httpClient.BaseAddress = new Uri(configuration["ApiUrlsConfig:ClientsApiUrl"]);
                     });
 
                     services.AddHttpClient("ChargesAPI", httpClient =>
                     {
-                        httpClient.BaseAddress = new Uri("http://localhost:7289/charges");
+                        httpClient.BaseAddress = new Uri(configuration["ApiUrlsConfig:ChargesApiUrl"]);
                     });
                 });
     }

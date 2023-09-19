@@ -25,7 +25,7 @@ namespace End_to_End_Tests
         }
 
         [Fact]
-        public async Task EndToEnd()
+        public async Task ChargesProcessing_EndToEnd()
         {
             var clients = new List<Client>
             {
